@@ -28,23 +28,6 @@ Then /^I can choose between showing (.*)$/ do |type|
   end
 end
 
-Then /^I can filter content (.*)$/ do |filter|
-  wait_until { find("#bar") }
-  page.execute_script("$('#bar .permissions a').show()")
-  s = case filter
-    when "by any permissions"
-      ".all"
-    when "by my content"
-      ".mine"
-    when "assigned to me"
-      ".entrusted"
-    when "that is public"
-      ".public"
-  end  
-  find("#bar .selection .permissions #{s}").click
-  wait_until { find("#bar .selection .permissions #{s}.active") }
-end
-
 Then /^I can sort by (.*)$/ do |sort_by|
   wait_until { find("#bar") }
   page.execute_script("$('#bar .sort a').show()")
@@ -67,7 +50,14 @@ Then /^the results are sorted by (.*)$/ do |sort_by|
   underscored_sort_by = sort_by.gsub(/\s/, '_')
   wait_until { find(".results .item_box[data-id]") }
   dom_ids = all(".results .item_box[data-id]").map {|x| x[:"data-id"].to_i}
-  model_sorted_ids = MediaResource.filter(@current_user, page.evaluate_script('App.MediaResources.current_filter')).
+  
+  env = Rack::MockRequest.env_for(current_url)
+  request = Rack::Request.new(env)
+  @filter = request.params.select do |k,v| 
+    MediaResourceModules::Filter::KEYS.include?(k.to_sym) 
+  end.delete_if {|k,v| v.blank?}.deep_symbolize_keys
+    
+  model_sorted_ids = MediaResource.filter(@current_user, @filter).
                       ordered_by(underscored_sort_by).
                       paginate(:page => 1, :per_page => PER_PAGE.first).
                       map(&:id)
@@ -91,18 +81,6 @@ When /^I change any of the settings in the bar then i am forwarded to a differen
   last_url.should_not be current_url
   last_url = current_url
   step 'I can choose between showing media entries and sets'
-  last_url.should_not be current_url
-  last_url = current_url
-  step 'I can filter content by any permissions'
-  last_url.should_not be current_url
-  last_url = current_url
-  step 'I can filter content by my content'
-  last_url.should_not be current_url
-  last_url = current_url
-  step 'I can filter content assigned to me'
-  last_url.should_not be current_url
-  last_url = current_url
-  step 'I can filter content that is public'
   last_url.should_not be current_url
   last_url = current_url
   step 'I can sort by created at'
