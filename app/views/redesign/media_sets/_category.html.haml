@@ -1,0 +1,11 @@
+%li.ui-resources-item
+  .ui-thumbnail.media-catalog
+    .ui-thumbnail-privacy
+      %i.icon-privacy-open
+    .ui-thumbnail-image-wrapper
+      .ui-thumbnail-image-holder
+        -# TODO remove http://medienarchiv.zhdk.ch
+        %img{:alt => "#{category.title}", :src => "http://medienarchiv.zhdk.ch/media_resources/#{category.id}/image", :class => "ui-thumbnail-image"}
+    .ui-thumbnail-meta
+      %h3.ui-thumbnail-meta-title= category.title
+      %p.ui-thumbnail-meta-subtitle= category.description

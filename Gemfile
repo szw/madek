@@ -10,19 +10,20 @@ source 'http://rubygems.org'
 source 'http://gems.github.com'
 
 # RAILS
-gem 'rails', '3.2.8'
+gem 'rails', '3.2.9'
 
 # DATABASE
 gem 'activerecord-jdbcpostgresql-adapter', platform: :jruby
-gem 'composite_primary_keys'
+gem 'composite_primary_keys', '~> 5.0.10'
 gem 'foreigner'
 gem 'jdbc-postgres', platform: :jruby
 gem 'memcache-client' 
 gem 'pg', platform: :mri_19
 
 # THE REST
-gem "coffee-filter", "~> 0.1.1"
 gem 'RedCloth'
+gem 'activeadmin', '~> 0.5.0'
+gem 'coffee-filter', "~> 0.1.1"
 gem 'coffee-script', '~> 2.2'
 gem 'haml', '~> 3.1'
 gem 'haml_assets'
@@ -76,7 +77,7 @@ group :test, :development, :personas do
   gem 'faraday'
   gem 'guard', '~> 1.3'
   gem 'guard-cucumber', '~> 1.2'
-  gem 'guard-rspec', '~> 1.2'
+  gem 'guard-rspec', '~> 2.1'
   gem 'guard-spork', '~> 1.1', platform: :mri_19
   gem 'poltergeist'
   gem 'pry'
@@ -90,7 +91,7 @@ end
 group :development, :production do
   # we could use yard with an other mkd provider https://github.com/lsegal/yard/issues/488
   platform :mri_19 do
-    gem "yard", "~> 0.8.2.1"
+    gem "yard", "~> 0.8.3"
     gem "yard-rest", "~> 1.1.4"
     gem 'redcarpet' # yard-rest dependency
   end
@@ -102,7 +103,7 @@ group :development do
 end
 
 group :test do
-  gem 'capybara', '~> 1.1'
+  gem 'capybara', '1.1.2'
   gem 'capybara-screenshot'
   gem 'cucumber', '~> 1.2'
   gem 'cucumber-rails', '~> 1.3', :require => false

@@ -157,7 +157,7 @@ MAdeK::Application.routes.draw do
 ###############################################
 
   resources :media_files # TODO remove ??
-  
+   
 ###############################################
 # TODO refactor nested resources to people and make user as single resource
 
@@ -187,16 +187,15 @@ MAdeK::Application.routes.draw do
 
 ###############################################
 
-  # TODO rename :import
-  resource :upload, :controller => 'upload', :except => :new do
-    member do
-      get :permissions
-      get :set_media_sets
-      put :complete
-      get :dropbox
-      post :dropbox
-    end
-  end
+  get  'import' => 'import#start'
+  post 'import' => 'import#upload'
+  delete 'import' => 'import#destroy'
+  get  'import/dropbox' => 'import#dropbox'
+  post 'import/dropbox' => 'import#dropbox'
+  get  'import/permissions' => 'import#permissions', :as => "permissions_import"
+  get  'import/meta_data' => 'import#meta_data', :as => "edit_import"
+  get  'import/organize' => 'import#organize'
+  put  'import/complete' => 'import#complete'
   
 ###################
    
@@ -212,79 +211,10 @@ MAdeK::Application.routes.draw do
 ####################################################################################
 
   namespace :admin do
-    root :to => "keys#index"
-
     match '/setup', :to => "setup#show"
     match '/setup/:action', :to => "setup"
-
-    match '/settings', :to => "admin#settings"
-
-    resources :meta_context_groups do
-      collection do
-        put :reorder
-      end
-    end
-    
-    resources :meta_key_definitions
-
-    resources :permission_presets
-    
-    resource :meta, :controller => 'meta' do
-      member do
-        get :export
-        #old# get :import
-        #old# post :import
-      end
-    end
-
-    resources :keys do
-      collection do
-        get :mapping
-      end
-    end
-
-    resources :contexts do
-      resources :definitions do
-        collection do
-          put :reorder
-        end
-      end
-    end
-
-    resources :terms
-    
-    resources :users, :except => [:new, :create] do
-      member do
-        get :switch_to
-      end
-    end
-
-    resources :people do
-      resources :users, :only => [:new, :create]
-    end
-
-    resources :groups do
-      resources :users, :only => [] do
-        member do
-          post :membership
-          delete :membership
-        end
-      end
-    end
-
-    resource :usage_term
-
-    resources :media_sets do
-      collection do
-        get :special
-        post :special
-      end
-    end
-    
-    resources :copyrights
-        
   end
 
-####################################################################################
-
+  ActiveAdmin.routes(self)
+    
 end

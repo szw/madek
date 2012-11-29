@@ -43,11 +43,7 @@ def click_on_arrow_next_to(word)
 end
 
 def create_group(groupname)
-  group = Group.where(:name => groupname).first
-  if group.nil?
-    group = Group.create(:name => groupname)
-  end
-  return group
+  Group.find_or_create_by_name(:name => groupname)
 end
 
 def wait_for_css_element(element)
@@ -99,7 +95,7 @@ end
 def click_media_entry_titled(title)
   entry = find_media_resource_titled(title)
   wait_until { entry.find("a") }
-  entry.find("a").click
+  entry.find("a img").click
   sleep 1.0
 end
 
@@ -121,7 +117,7 @@ end
 
 # Sets the checkbox of the media entry with the given title to true.
 def check_media_entry_titled(title)
-  wait_until(15) { find(".thumb_box") }
+  wait_until { find(".thumb_box") }
   # Crutch so we can check the otherwise invisible checkboxes (they only appear on hover,
   # which Capybara can't do)
   #make_hidden_items_visible
@@ -140,7 +136,7 @@ end
 # if successful, nil otherwise.
 def find_media_resource_titled(title, type = MediaResource)
   page.execute_script("$(document).scrollTop(0)")
-  wait_until(35) { find(".item_box") }
+  wait_until { find(".item_box") }
   
   results = type.accessible_by_user(@current_user).find_by_title(title)
   results = Array(results) unless results.is_a? Array # because of the different behaviour of MediaSet and MediaEntry .find_by_title -.-
@@ -150,7 +146,7 @@ end
 
 def find_media_resource_by_id(id, type = MediaResource)
   page.execute_script("$(document).scrollTop(0)")
-  wait_until(35) { find(".item_box") }
+  wait_until { find(".item_box") }
   
   find_media_resource_element type.accessible_by_user(@current_user).find id
 end
@@ -363,13 +359,27 @@ def add_to_set(set_title = "Untitled Set", picture_title = "Untitled", owner = "
 end
 
 def scroll_to_next_page
-  wait_until(25) { find(".page[data-page]") }
+  wait_until { all(".page[data-page]").size > 0 }
   page = find(".page[data-page]")[:"data-page"]
   
-  wait_until(25) {find(".page .pagination", :text => /Seite #{page}\svon/)}
+  wait_until {find(".page .pagination", :text => /Seite #{page}\svon/)}
   find(".page .pagination", :text => /Seite #{page}\svon/).click
+  wait_until {all(".page[data-page='#{page}']").empty?}
   wait_until {
     all(".page[data-page='#{page}']").size == 0 and
+    find(".page .pagination", :text => /Seite #{page}\svon/).find(:xpath, "./..") and
     find(".page .pagination", :text => /Seite #{page}\svon/).find(:xpath, "./..").all(".item_box img").size > 0
   }
+end
+
+# after filter panel has been updated, fetch fresh the selected term
+def selected_term
+  find(".key[data-key_name='#{@key_name}'] .term.selected")
+end
+
+def deselect_term(value)
+  selected_checkbox = find(".term.selected input[value='#{value}']")
+  selected_checkbox.find(:xpath, "./../../../..").find("h3").click
+  selected_checkbox.find(:xpath, "./../../..").find("h3").click
+  selected_checkbox.find(:xpath, "./..").click
 end

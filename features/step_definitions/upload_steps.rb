@@ -51,13 +51,13 @@ end
 
 Then /^I can set the permissions for the media entry during the upload process$/ do
   step 'I upload a file'
-  visit permissions_upload_path
+  visit permissions_import_path
   wait_for_css_element("#permissions .line")
 end
 
 Then /^I add the media entry to a set called "([^"]*)"$/ do |arg1|
   @media_entry_incomplete.media_sets.empty?.should be_true
-  visit "/upload/set_media_sets"
+  visit "/import/organize"
   find("button", :text => "Einträge zu einem Set hinzufügen").click
   step 'I should see the "Konzepte" set inside the widget'
   step 'I select "Konzepte" as parent set'
@@ -69,7 +69,7 @@ When /^I upload a file with a file size greater than 1.4 GB$/ do
   begin
     path = File.join(::Rails.root, "tmp/file_biger_then_1_4_GB.mov") 
     `dd if=/dev/zero of=#{path} count=3000000` 
-    visit "/upload"
+    visit "/import"
     attach_file(find("input[type='file']")[:id], path)
   ensure
     File.delete path
@@ -90,7 +90,7 @@ When /^I have uploaded some files to my dropbox$/ do
 end
 
 When /^I start a new upload process$/ do
-  visit "/upload"
+  visit "/import"
 end
 
 Given /^all users have dropboxes$/ do
@@ -120,7 +120,7 @@ When /^I have uploaded a directory containing files to my dropbox$/ do
 end
 
 When /^I have started uploading some files$/ do
-  visit "/upload"
+  visit "/import"
 
   # Need to copy this file to a temporary new file because files are moved away after succesful
   # uploads!
@@ -133,12 +133,17 @@ When /^I have started uploading some files$/ do
 end
 
 When /^I cancel the upload$/ do
-  step 'follow "Abbrechen"'
-  page.driver.browser.switch_to.alert.accept
+  if  page.driver.is_a? Capybara::Poltergeist::Driver
+    page.execute_script(%Q[window.alert = function(){return true;}])
+    step 'follow "Abbrechen"'
+  else
+    step 'follow "Abbrechen"'
+    page.driver.browser.switch_to.alert.accept
+  end
 end
 
 Then /^the uploaded files are still there$/ do
-  visit "/upload"
+  visit "/import"
   wait_for_css_element("li.plupload_done")
 end
 
@@ -149,7 +154,7 @@ end
 When /^I uploading some files from the dropbox and from the filesystem$/ do
   @user_dropbox_root_dir = File.join(AppSettings.dropbox_root_dir, @current_user.dropbox_dir_name)
   step 'I have uploaded some files to my dropbox'
-  visit "/upload"
+  visit "/import"
   attach_file(find("input[type='file']")[:id], File.join(::Rails.root, "features/data/images/berlin_wall_01.jpg") )
   attach_file(find("input[type='file']")[:id], File.join(::Rails.root, "features/data/images/berlin_wall_02.jpg") )
   attach_file(find("input[type='file']")[:id], File.join(::Rails.root, "features/data/images/date_should_be_1990.jpg") )
@@ -158,12 +163,12 @@ When /^I uploading some files from the dropbox and from the filesystem$/ do
 end
 
 When /^I delete some fo those after the upload$/ do
-  wait_until(15) { find("#uploader_filelist li span",:text => "berlin_wall_01.jpg").find(:xpath, "../..") }
+  wait_until { find("#uploader_filelist li span",:text => "berlin_wall_01.jpg").find(:xpath, "../..") }
   deleted_plupload_file_element_after_upload = find("#uploader_filelist li span",:text => "berlin_wall_01.jpg").find(:xpath, "../..")
   deleted_plupload_file_element_after_upload.find(".delete_plupload_entry").click
   page.driver.browser.switch_to.alert.accept
   
-  wait_until(15) { find("#dropbox_filelist li span",:text => "berlin_wall_01.jpg").find(:xpath, "../..") }
+  wait_until { find("#dropbox_filelist li span",:text => "berlin_wall_01.jpg").find(:xpath, "../..") }
   deleted_dropbox_file_element_after_upload = find("#dropbox_filelist li span",:text => "berlin_wall_01.jpg").find(:xpath, "../..")
   deleted_dropbox_file_element_after_upload.find(".delete_dropbox_file").click
   page.driver.browser.switch_to.alert.accept
@@ -176,7 +181,7 @@ Then /^those files are deleted$/ do
 end
 
 Then /^only the rest of the files are available for import$/ do
-  visit upload_path
+  visit import_path
   page.should_not have_content "berlin_wall_01.jpg"
   page.should have_content "berlin_wall_02.jpg"
   page.should have_content "date_should_be_1990.jpg"
@@ -223,15 +228,15 @@ end
 
 
 Then /^I see a list of my uploaded files$/ do
-  wait_until(15){ all(".loading", :visible => true).size == 0 }
+  wait_until{ all(".loading", :visible => true).size == 0 }
   all('.media_resource_selection .media .item_box').size.should be >= 2
-  wait_until(15){ all(".edit_meta_datum_field", :visible => true).size > 0 }
-  wait_until(15){ find(".attention_flag") } if MediaEntryIncomplete.any? {|me| not me.context_valid?(MetaContext.upload)}  
+  wait_until{ all(".edit_meta_datum_field", :visible => true).size > 0 }
+  wait_until{ find(".attention_flag") } if MediaEntryIncomplete.any? {|me| not me.context_valid?(MetaContext.upload)}  
 end
 
 
 And /^I can jump to the next file$/ do
-  wait_until(15){ all(".loading", :visible => true).size == 0 }
+  wait_until{ all(".loading", :visible => true).size == 0 }
   wait_until { find(".navigation .next:not([disabled=disabled])") }
   next_id= find(".navigation .next")[:"data-media_resource_id"]
   find(".navigation .next").click
@@ -239,7 +244,7 @@ And /^I can jump to the next file$/ do
 end
 
 And /^I can jump to the previous file$/ do
-  wait_until(15){ find(".navigation .previous:not([disabled=disabled])") }
+  wait_until{ find(".navigation .previous:not([disabled=disabled])") }
   previous_id= find(".navigation .previous")[:"data-media_resource_id"]
   find(".navigation .previous").click
   wait_until { find(".navigation .current")[:"data-media_resource_id"] == previous_id }
@@ -270,24 +275,27 @@ end
 
 Given /^MetaTerms are existing in the upload context$/ do
   step 'I am "Adam"'
-  visit "/admin/contexts"
   ["academic year", "epoch", "Zett_Ausgabe"].each do |key|
-    find("a", :text => "Upload").click
-    find(".buttons", :text => "Add Key").click
-    find("#meta_key_definition_meta_key_id").select(key)
-    find("#meta_key_definition_label_de_ch").set(key)
-    find("input[type=submit]").click
+    visit "/admin/meta_contexts"
+    find("tr",text: 'Upload').find("a",text:"View").click()
+    find("a",text:'Add Key').click()
+    find("select#meta_key_definition_meta_key_id").select(key)
+    find("input#meta_key_definition_label_id").set(key)
+    find("input#meta_key_definition_description_id").set(key)
+    find("input#meta_key_definition_hint_id").set(key)
+    find("input[type=submit]").click()
   end
 end
 
 Then /^I can set values for the meta data from type meta terms$/ do
-  visit edit_upload_path
+  visit edit_import_path
   meta_data = @current_user.media_resources.where(:type => "MediaEntryIncomplete").first.meta_data
   
   # not_extensible_meta_terms_checkbox
   not_extensible_meta_terms_checkbox = find(".edit_meta_datum_field.meta_terms.not_extensible_list.checkboxes")
   not_extensible_meta_terms_checkbox.find("input").click
   step 'I wait for the AJAX magic to happen'
+  sleep(1)
   meta_key_id = MetaKey.find_by_label not_extensible_meta_terms_checkbox["data-field_name"]
   meta_data.reload.where(:meta_key_id => meta_key_id).first.value.length.should > 0
 

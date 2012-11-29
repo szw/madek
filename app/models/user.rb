@@ -14,6 +14,7 @@ class User < ActiveRecord::Base
   has_many :media_sets
   has_many :media_entries
   has_many :incomplete_media_entries, :class_name => "MediaEntryIncomplete", :dependent => :destroy
+  has_many :keywords
 
   has_and_belongs_to_many :favorites, :class_name => "MediaResource", :join_table => "favorites" do
     def toggle(media_resource)
@@ -34,6 +35,14 @@ class User < ActiveRecord::Base
   
 #############################################################
 
+  def individual_contexts
+    # NOTE media_sets scope includes the subclasses (FilterSet) 
+    r = MediaSet.media_sets.accessible_by_user(self).select("media_resources.id")
+    MetaContext.joins(:media_sets).uniq.where("media_resources.id IN (#{r.to_sql})")
+  end
+
+#############################################################
+
   validates_presence_of     :login
   validates_length_of       :login,    :within => 3..40
   validates_uniqueness_of   :login
@@ -52,6 +61,12 @@ class User < ActiveRecord::Base
   # prevents a user from submitting a crafted form that bypasses activation
   # anything else you want your user to change should be added here.
 #temp#  attr_accessible :login, :email, :person_id
+
+#############################################################
+
+  before_create do
+    self.password = Digest::SHA1.hexdigest(self.password) unless self.password.blank?
+  end
 
 #############################################################
   

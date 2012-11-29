@@ -6,7 +6,9 @@ class ApplicationController < ActionController::Base
 
 ##############################################
 # Redesign Switcher
-  layout Proc.new { |controller| if redesign? then "redesign" else "main" end }
+  before_filter {prepend_view_path "app/views/redesign" if redesign?}
+  
+  layout Proc.new {|controller| if redesign? then "redesign" else "main" end }
 
   def render(options = {}, extra_options = {}, &block)
     if redesign? and request.format == "text/html"
@@ -20,12 +22,16 @@ class ApplicationController < ActionController::Base
   end
 
   def redesign?
+    
     if params.has_key?(:setredesign)
       session[:design] = :setredesign
     elsif params.has_key?(:resetdesign)
       session.delete :design
     end
-    params.has_key?(:setredesign) or session[:design] == :setredesign
+
+    redesign = (params.has_key?(:setredesign) or session[:design] == :setredesign)
+    Thread.current[:redesign] = redesign
+    return redesign
   end
 
 ##############################################
@@ -43,6 +49,18 @@ class ApplicationController < ActionController::Base
     @current_user ||= login_from_session
   end
 
+########################################################
+# Admin Authentication 
+
+def authenticate_admin_user!
+  unless current_user and Group.find_by_name("Admin").users.include? current_user
+    flash[:error] = "You are not in the admin-group!"
+    redirect_to root_path
+  else
+    true
+  end
+end
+
 ##############################################
 
   # TODO i18n
@@ -59,12 +77,23 @@ class ApplicationController < ActionController::Base
       elsif session[:return_to]
         redirect_back_or_default('/')
       else
-        # TODO refactor to UsersController#show as Dashboard
-        respond_to do |format|
-          format.html { render :template => "/users/show" }
-        end
+        @latest_user_resources = current_user.media_resources.ordered_by(:updated_at).limit(6)
+        @latest_user_imports = current_user.media_entries.ordered_by(:created_at).limit(6)
+        @user_favorite_resources = current_user.media_entries.limit(12)
+        @user_keywords_count = current_user.keywords.count
+        @user_keywords = view_context.hash_for current_user.keywords.limit(6)
+        @user_groups = current_user.groups.limit(4)
+        @user_entrusted_resources = MediaResource.entrusted_to_user(current_user).limit(6)
+        render :template => "/users/show" # TODO refactor to UsersController#show as Dashboard
       end
     else
+      @splashscreen_set = MediaSet.splashscreen
+      @splashscreen_set_children = @splashscreen_set.child_media_resources.where(:view => true).shuffle if @splashscreen_set
+      @featured_set = MediaSet.featured
+      @featured_set_children = @featured_set.child_media_resources.where(:view => true).limit(6) if @featured_set
+      @catalog_set = MediaSet.catalog
+      @catalog_set_categories = @catalog_set.categories.where(:view => true).limit(3) if @catalog_set
+      @latest_media_entries = MediaResource.media_entries.where(:view => true).limit(6)
       render :layout => redesign?
     end
   end

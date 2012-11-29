@@ -127,9 +127,7 @@ end
 
 Then /^I can see the owner of each set$/ do
   @accesible_sets.each do |set|
-    steps %Q{
-      Then I should see "#{set.user.name}"
-    }
+    step 'I should see "%s"' % set.user.name
   end
 end
 
@@ -152,7 +150,7 @@ Then /^I can read the sliced title of each set$/ do
     else
       set.title
     end
-    steps 'Then I should see "%s"' % match_string
+    step 'I should see "%s"' % match_string
   end
 end
 
@@ -421,5 +419,5 @@ Given /^I examine one of the child media entry more closely$/ do
 end
 
 Then /^I see more information about that media entry popping up$/ do
-  wait_until(45){ all(".entry_popup").size > 0 }
+  wait_until { all(".entry_popup").size > 0 }
 end
