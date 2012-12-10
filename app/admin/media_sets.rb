@@ -18,7 +18,7 @@ ActiveAdmin.register MediaSet do
   
   index do
     column :type
-    column :title
+    column :title, :sortable => false
     column :user
     column "Entries / Sets" do |x|
       c1, c2 = [x.child_media_resources.media_entries.count, x.child_media_resources.media_sets.count]
@@ -50,6 +50,9 @@ ActiveAdmin.register MediaSet do
   end
   scope :splashscreen_slideshow_set do |records|
     records.where(:id => AppSettings.splashscreen_slideshow_set_id)
+  end
+  scope :with_individual_contexts do |records|
+    records.joins("INNER JOIN media_sets_meta_contexts ON media_sets_meta_contexts.media_set_id = media_resources.id")
   end
 
   form :partial => "form"
