@@ -244,13 +244,12 @@ class MediaFile < ActiveRecord::Base
 
               File.symlink(path, "#{directory_prefix}/#{File.basename(path)}") unless File.exists?("#{directory_prefix}/#{File.basename(path)}")
             else
-             result = false 
+              result = false 
             end
-            return result
           end
         end
-        return result
       end
+      return result
     end
   end
 
