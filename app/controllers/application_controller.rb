@@ -160,7 +160,7 @@ end
           (request[:controller] == "media_sets" and request[:action] == "show") or 
           (request[:controller] == "keywords" and request[:action] == "index") or 
           (request[:controller] == "search" and request[:action] == "index")
-      @current_user = user = User.new
+      @current_user = user = User.new(person: Person.new(lastname: "Guest"))
 
     end
     user
