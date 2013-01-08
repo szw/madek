@@ -44,6 +44,7 @@ class MediaResourcesController
   display_page: (json, container)->
     rp = $("#result_page").tmpl(json)
     if container.hasClass("page")
+      rp.attr "items_in_page", json.media_resources.length
       container.replaceWith(rp.show())
     else
       container.append(rp.show())

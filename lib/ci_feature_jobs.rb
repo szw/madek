@@ -35,7 +35,7 @@ rm -f $WORKSPACE/tmp/*.sql
 mkdir -p $WORKSPACE/tmp/html
 
 rvm use 1.9.3
-rbenv shell 1.9.3-p194
+rbenv shell 1.9.3-p327
 bundle install --without development
 bundle exec rake madek:test:setup_ci_dbs
 bundle exec rake madek:test:setup
@@ -116,7 +116,7 @@ bundle exec rake madek:test:setup
       REXML::XPath.first(xml_doc,  \
                          "/project/buildWrappers/EnvInjectBuildWrapper/info/propertiesContent") \
                          .text= %Q{RAILS_ENV=test 
-CI_TEST_NAME=#{branch_name}_rspec
+CI_TEST_NAME=#{branch_name.downcase}_rspec
 }
 
       # this seems the only way to get it up reliably
@@ -173,7 +173,7 @@ CI_TEST_NAME=#{branch_name}_rspec
     end
 
     def job_env job_params
-      "RAILS_ENV=test\nCI_TEST_NAME=#{job_params[:branch_name]}_#{job_params[:name]}\nCUCUMBER_FILE=#{job_params[:filename]}"
+      "RAILS_ENV=test\nCI_TEST_NAME=#{job_params[:branch_name].downcase}_#{job_params[:name].downcase}\nCUCUMBER_FILE=#{job_params[:filename]}"
     end
 
     def ci_job_name job_params

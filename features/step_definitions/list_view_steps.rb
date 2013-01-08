@@ -13,7 +13,7 @@ end
 Then /^for each resource I see meta data from the "(.*?)" context$/ do |context|
   @inspected_resource = MediaResource.accessible_by_user(@current_user).last
   @inspected_resource_element = find(".item_box[data-id='#{@inspected_resource.id}']")
-  @inspected_meta_data = @inspected_resource.meta_data_for_context(MetaContext.send(context), false)
+  @inspected_meta_data = @inspected_resource.meta_data.for_context(MetaContext.send(context), false)
   @inspected_meta_data.each do |meta_datum|
     @inspected_resource_element.should have_content meta_datum.to_s
   end
@@ -25,7 +25,9 @@ When /^I see a list of sets in list view$/ do
 end
 
 Then /^for each resource I see a thumbnail image if it is available$/ do
-  @inspected_resource_element.find("img")
+  unless @inspected_resource_element[:class] =~ /set/
+    @inspected_resource_element.find("img")
+  end
 end
 
 When /^I see the "(.*?)" meta key of a set/ do |meta_key|
@@ -40,9 +42,6 @@ When /^I see the "(.*?)" meta key of a set/ do |meta_key|
   end
 end
 
-Then /^for each resource I see an icon if no thumbnail is available$/ do
-  @inspected_resource_element.find("img")
-end
 
 When /^I see a resource in a list view$/ do
   step 'I see a list of resources'
@@ -119,8 +118,8 @@ Then /^the resource shows an icon representing its permissions$/ do
   find(".item_box .item_permission")
 end
 
-When /^I click the thumbnail of that resource$/ do
-  @inspected_resource_element.find("img").click
+When /^I click that resource$/ do
+  @inspected_resource_element.find(".thumb_box_set").click
 end
 
 When /^one resource can be taller caused by it's visible meta data$/ do

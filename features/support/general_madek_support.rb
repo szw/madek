@@ -94,14 +94,14 @@ end
 
 def click_media_entry_titled(title)
   entry = find_media_resource_titled(title)
-  wait_until { entry.find("a") }
+  wait_until { entry.all("a img").size > 0 }
   entry.find("a img").click
   sleep 1.0
 end
 
 def click_media_set_titled(title)
   entry = find_media_resource_titled(title, MediaSet)
-  wait_until { entry.find("a") }
+  wait_until { entry.all("a").size > 0 }
   entry.find("a").click
   sleep 1.0
 end
@@ -117,18 +117,14 @@ end
 
 # Sets the checkbox of the media entry with the given title to true.
 def check_media_entry_titled(title)
-  wait_until { find(".thumb_box") }
+  wait_until { all(".thumb_box").size > 0 }
   # Crutch so we can check the otherwise invisible checkboxes (they only appear on hover,
   # which Capybara can't do)
   #make_hidden_items_visible
   make_entries_controls_visible
   entry = find_media_resource_titled(title)
-  #cb_icon = entry.find(:css, ".check_box").find("img")
   cb_icon = entry.find(:css, "div.check_box")
-  #debugger; puts "lala"
   cb_icon.click if (cb_icon.find(:xpath, "../../..")[:class] =~ /.*selected.*/).nil?
-  # Old way, when it was a PNG
-  #cb_icon.click if (cb_icon[:src] =~ /_on.png$/).nil? # Only click if it's not yet checked
 end
 
 # Attempts to find a media entry based on its title by looking for
@@ -136,7 +132,7 @@ end
 # if successful, nil otherwise.
 def find_media_resource_titled(title, type = MediaResource)
   page.execute_script("$(document).scrollTop(0)")
-  wait_until { find(".item_box") }
+  wait_until { all(".item_box").size > 0 }
   
   results = type.accessible_by_user(@current_user).find_by_title(title)
   results = Array(results) unless results.is_a? Array # because of the different behaviour of MediaSet and MediaEntry .find_by_title -.-
@@ -146,16 +142,19 @@ end
 
 def find_media_resource_by_id(id, type = MediaResource)
   page.execute_script("$(document).scrollTop(0)")
-  wait_until { find(".item_box") }
+  wait_until { all(".item_box").size > 0 }
   
   find_media_resource_element type.accessible_by_user(@current_user).find id
 end
 
 # find the interface element of a media resource on the current screen
 def find_media_resource_element(mr)
-  while (all(".item_box[data-id='#{mr.id}']").empty?) 
-    scroll_to_next_page
-  end 
+  wait_until { all(".item_box[data-id]").size > 0 }
+  if all(".item_box[data-id='#{mr.id}']").empty? and all(".page[data-page]").size > 0
+    while (all(".item_box[data-id='#{mr.id}']").empty?)
+      scroll_to_next_page
+    end
+  end
   element = find(".item_box[data-id='#{mr.id}']")
   puts "Interface element was not found for that media resource" unless element
   return element
@@ -277,6 +276,7 @@ end
 # that is necessary for the autocomplete to kick in, but it no longer does
 # so, breaking many of our tests. Needs more investigation.
 def type_into_autocomplete(type, text)
+  wait_until { all(".loading", :visible => true).empty? }
   if type == :user
     wait_for_css_element(".users .add.line .button")
     find(".users .add.line .button").click
@@ -358,18 +358,20 @@ def add_to_set(set_title = "Untitled Set", picture_title = "Untitled", owner = "
   wait_until { all(".widget").size == 0 }
 end
 
-def scroll_to_next_page
+def scroll_to_next_page(page = nil)
   wait_until { all(".page[data-page]").size > 0 }
-  page = find(".page[data-page]")[:"data-page"]
+  page ||= find(".page[data-page]")[:"data-page"]
   
-  wait_until {find(".page .pagination", :text => /Seite #{page}\svon/)}
-  find(".page .pagination", :text => /Seite #{page}\svon/).click
+  wait_until {all(".page .pagination", :text => /Seite #{page}\svon/).size > 0}
+  el1 = find(".page .pagination", :text => /Seite #{page}\svon/)
+  el1.click
   wait_until {all(".page[data-page='#{page}']").empty?}
-  wait_until {
-    all(".page[data-page='#{page}']").size == 0 and
-    find(".page .pagination", :text => /Seite #{page}\svon/).find(:xpath, "./..") and
-    find(".page .pagination", :text => /Seite #{page}\svon/).find(:xpath, "./..").all(".item_box img").size > 0
-  }
+  wait_until {all(".page[items_in_page] .pagination", :text => /Seite #{page}\svon/).size > 0}
+  # the element is now replaced, let's select the new one
+  el1 = find(".page[items_in_page] .pagination", :text => /Seite #{page}\svon/)
+  wait_until {el1.all(:xpath, "./..").size > 0}
+  el2 = el1.find(:xpath, "./..")
+  wait_until {el2.all(".item_box img").size > 0}
 end
 
 # after filter panel has been updated, fetch fresh the selected term
