@@ -150,9 +150,9 @@ end
     elsif request.format.to_sym == :json or
           (request[:controller] == "media_resources" and request[:action] == "image") or 
           (request[:controller] == "media_resources" and request[:action] == "show") or
-          (request[:controller] == "media_resources" and request[:action] == "index") #or
+          (request[:controller] == "media_resources" and request[:action] == "index") or
+          (request[:controller] == "application" and request[:action] == "root") # or 
           #(request[:controller] == "explore") or 
-          #(request[:controller] == "application" and request[:action] == "root") or 
           #(request[:controller] == "media_entries" and request[:action] == "show") or
           #(request[:controller] == "media_entries" and request[:action] == "parents") or
           #(request[:controller] == "media_entries" and request[:action] == "context_group") or
