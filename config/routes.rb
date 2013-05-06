@@ -1,10 +1,6 @@
 # -*- encoding : utf-8 -*-
 MAdeK::Application.routes.draw do
 
-  get "media_entries/index"
-
-  get "media_entries/show"
-
   ##### ROOT
 
   root :to => "application#root"
