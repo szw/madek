@@ -112,8 +112,8 @@ class ApplicationController < ActionController::Base
     user = nil
 
     if session[:user_id]
-      # TODO use find without exception: self.current_user = User.find(session[:user_id])
       self.current_user = user = User.find_by_id(session[:user_id])
+      self.current_user.act_as_uberadmin = session[:act_as_uberadmin]
 
       # request format can be nil!
       if not (request[:controller] == "media_resources" and request[:action] == "image") and (request.format and request.format.to_sym != :json)

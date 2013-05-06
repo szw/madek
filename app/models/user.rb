@@ -4,6 +4,8 @@
 class User < ActiveRecord::Base
   has_secure_password
 
+  attr_accessor 'act_as_uberadmin'
+
   belongs_to :person
   delegate :name, :fullname, :shortname, :to => :person
 

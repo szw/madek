@@ -27,7 +27,7 @@
             %i.icon-admin.ui-drop-icon
             Admin
         %li.ui-drop-item
-          - if session[:uberadmin] == true
+          - if session[:act_as_uberadmin] == true
             = link_to app_admin_exit_uberadmin_path, method: 'POST', class: 'strong' do
               %i.icon-admin.ui-drop-icon
               Verlasse Überadmin-Modus
