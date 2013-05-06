@@ -1,3 +1,13 @@
 
+@import "animation"
+
+@include keyframes(alert-border) 
+  0%, 100%
+    border-color: $red
+  50%
+    border-color: transparentize($red, 0.5)
+
 body[data-uberadmin]
-  border: 5px solid $red
+  border-width: 5px
+  border-style: solid
+  @include animation(alert-border 3s infinite)
