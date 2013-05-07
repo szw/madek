@@ -39,10 +39,3 @@ Feature: Acting as an Uberadmin
     And I can see "Sie haben nicht die notwendige Zugriffsberechtigung."
 
 
-
-
-
-
-
-
-    
