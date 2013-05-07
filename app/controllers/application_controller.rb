@@ -53,7 +53,7 @@ class ApplicationController < ActionController::Base
       elsif session[:return_to]
         redirect_back_or_default('/')
       else
-        redirect_to my_dashboard_path
+        redirect_to my_dashboard_path, flash: flash
       end
     else
       @splashscreen_set = MediaSet.splashscreen
@@ -83,12 +83,10 @@ class ApplicationController < ActionController::Base
   protected
 
   def not_authorized!
-    msg = "Sie haben nicht die notwendige Zugriffsberechtigung." #"You don't have appropriate permission to perform this operation."
+    msg = "Sie haben nicht die notwendige Zugriffsberechtigung." 
     respond_to do |format|
-      format.html { flash[:error] = msg
-                    redirect_to (request.env["HTTP_REFERER"] ? :back : my_dashboard_path)
-                  }
-      format.json { render :json => {error: msg}, :status => 500}
+      format.html { redirect_to root_path, flash: {error:  msg} }
+      format.json { render :json => {error: msg}, status: :not_authorized}
     end
   end
 
