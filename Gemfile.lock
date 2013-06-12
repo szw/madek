@@ -16,6 +16,13 @@ GIT
     net-ldap (0.4.0)
 
 GIT
+  remote: git://github.com/textacular/textacular.git
+  revision: a294c3c43cc8c806bff06472ab98589b83b6dde9
+  specs:
+    textacular (3.0.0)
+      activerecord (>= 3.0, < 4.1)
+
+GIT
   remote: git://github.com/zhdk/active_admin.git
   revision: f784f9eab39308628b74ce54a186164bc185285a
   specs:
@@ -31,13 +38,6 @@ GIT
       meta_search (>= 0.9.2)
       rails (>= 3.0.0)
       sass (>= 3.1.0)
-
-GIT
-  remote: http://github.com/DrTom/textacular.git
-  revision: 8891399a017541fd0263e2f028aefe2d96c36dc5
-  specs:
-    textacular (3.0.0)
-      activerecord (>= 3.0, < 4.1)
 
 GIT
   remote: https://github.com/DrTom/font-awesome-plus-sass-rails.git
@@ -280,7 +280,7 @@ GEM
     mime-types (1.23)
     minimization (0.2.1)
       text-table (~> 1.2)
-    multi_json (1.7.2)
+    multi_json (1.7.6)
     multi_xml (0.5.3)
     multipart-post (1.2.0)
     nested_set (1.7.1)
