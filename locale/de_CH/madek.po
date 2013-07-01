@@ -819,3 +819,12 @@ msgstr "Andere"
 
 msgid "People"
 msgstr "Personen"
+
+msgid "Name of the person"
+msgstr "Name der Person"
+
+msgid "Name of the group"
+msgstr "Name der Gruppe"
+
+msgid "Partially responsible"
+msgstr "Teilweise verantwortlich"
