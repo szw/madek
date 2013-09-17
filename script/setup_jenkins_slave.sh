@@ -264,6 +264,8 @@ JENKINS
 # gherkin lexer so we can run it under plain ruby
 ###########################################################
 
+# This is now handled by Ansible and will be removed from this script on the next release. See gitolite@code.zhdk.ch:ansible.git
+
 apt-get install --assume-yes ragel
 
 cat << 'JENKINS' | su -l jenkins
