@@ -54,8 +54,8 @@ module MediaResourceModules
         end
 
 
-        accepts_nested_attributes_for :meta_data, :allow_destroy => true,
-          :reject_if => proc { |attributes| attributes['value'].blank? and attributes['_destroy'].blank? }
+        # accepts_nested_attributes_for :meta_data, :allow_destroy => true,
+        #  :reject_if => proc { |attributes| attributes['value'].blank? and attributes['_destroy'].blank? }
         # NOTE the check on _destroy should be automatic, check Rails > 3.0.3
 
         def self.find_by_title(title)
@@ -116,7 +116,7 @@ module MediaResourceModules
           update_attributes_without_pre_validation(dup_attributes)
         end
       
-        alias_method_chain :update_attributes, :pre_validation
+        #alias_method_chain :update_attributes, :pre_validation
 
         def context_valid?(context = MetaContext.find("core"))
           meta_data.for_context(context).all? {|meta_datum| meta_datum.context_valid?(context) }
