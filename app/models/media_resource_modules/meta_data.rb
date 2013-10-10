@@ -76,47 +76,24 @@ module MediaResourceModules
           t = meta_data.get_value_for("author")
         end
 
-        def update_attributes_with_pre_validation(attributes)
-          # we need to deep copy the attributes for batch edit (multiple resources)
-          dup_attributes = Marshal.load(Marshal.dump(attributes)).deep_symbolize_keys
 
-          if dup_attributes[:meta_data_attributes]
-            # To avoid overwriting at batch update: remove from attribute hash if :keep_original_value and value is blank
-            dup_attributes[:meta_data_attributes].delete_if { |key, attr| attr[:keep_original_value] and attr[:value].blank? }
-            # To avoid overwriting using "apply-to-all" (overwrite: false)
-            dup_attributes[:meta_data_attributes].delete_if { |key, attr| 
-              meta_datum = self.meta_data.find_by_meta_key_id(MetaKey.where(id: attr[:meta_key_label]).first.try(&:id))
-              attr.delete :keep_original_value_if_exists and 
-              not meta_datum.blank? and
-              not meta_datum.value.blank?}
 
-            dup_attributes[:meta_data_attributes].each_pair do |key, attr|
-              if attr[:value].is_a? Array and attr[:value].all? {|x| x.blank? }
-                attr[:value] = nil
-              end
-              # find existing meta_datum, if it exists
-              if attr[:id].blank?
-                if attr[:meta_key_label]
-                  attr[:meta_key_id] ||= MetaKey.find_by_id(attr.delete(:meta_key_label)).try(:id)
-                end
-                if (md = meta_data.where(:meta_key_id => attr[:meta_key_id]).first)
-                  attr[:id] = md.id
-                end
-              else
-                attr.delete(:meta_key_label)
-              end
 
-              # get rid of meta_datum if value is blank
-              if !attr[:id].blank? and attr[:value].blank?
-                attr[:_destroy] = true
-                #old# attr[:value] = "." # NOTE bypass the validation
-              end
-            end
-          end
-          update_attributes_without_pre_validation(dup_attributes)
+        def get_existing_meta_datum_by_meta_key_id id
+          self.meta_data.find_by_meta_key_id(MetaKey.where(id: id).first.try(&:id))
         end
-      
-        #alias_method_chain :update_attributes, :pre_validation
+
+        def set_meta_data meta_data_hash
+          meta_data_hash.symbolize_keys[:meta_data_attributes].each do |k,meta_datum_hash|
+            get_existing_meta_datum_by_meta_key_id(meta_datum_hash[:meta_key_label]).try(&:destroy)
+            meta_key = MetaKey.find("author")
+            klass = Kernel.const_get(meta_key.meta_datum_object_type)
+            meta_datum= klass.create! meta_key_id: meta_key.id, media_resource_id: self.id, value: meta_datum_hash[:value]
+          end
+        end
+
+
+
 
         def context_valid?(context = MetaContext.find("core"))
           meta_data.for_context(context).all? {|meta_datum| meta_datum.context_valid?(context) }
