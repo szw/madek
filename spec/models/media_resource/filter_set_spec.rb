@@ -39,8 +39,7 @@ describe FilterSet do
           type = rand > 0.5 ? :media_entry : :media_set
           mr = FactoryGirl.create type, :user => @user
           all_fake_words += fake_words = Faker::Lorem.words(4)
-          mr.meta_data.create(:meta_key => MetaKey.find_by_id("title"), 
-                              :value => fake_words.join(' '))
+          mr.set_meta_data({meta_data_attributes: {"0" =>  {meta_key_id: MetaKey.find_by_id("title"),value: fake_words.join(' ')}}})
           mr.save # force full_text reindex
         end
         all_fake_words.each do |w|
