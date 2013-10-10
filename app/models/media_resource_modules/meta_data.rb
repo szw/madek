@@ -78,9 +78,17 @@ module MediaResourceModules
 
 
 
+        ### methods for setting meta_data
 
         def get_existing_meta_datum_by_meta_key_id id
           self.meta_data.find_by_meta_key_id(MetaKey.where(id: id).first.try(&:id))
+        end
+
+        def create_meta_datum meta_key, value
+          unless value and not value.blank?
+            meta_key.get_meta_datum_class.create! meta_key_id: meta_key.id, 
+              media_resource_id: self.id, value: value
+          end
         end
 
         def set_meta_data meta_data_hash
@@ -88,11 +96,22 @@ module MediaResourceModules
             .map{|k,v|[k,v.symbolize_keys]}.each do |k,meta_datum_hash|
             # TODO deprecate meta_key_label
             meta_key_id = (meta_datum_hash[:meta_key_id] or meta_datum_hash[:meta_key_label])
-            meta_key = MetaKey.find(meta_key_id) rescue binding.pry
-            meta_data.where("meta_key_id = ?", meta_key_id).destroy_all 
-            meta_datum= meta_key.get_meta_datum_class.create! meta_key_id: meta_key.id, media_resource_id: self.id, value: meta_datum_hash[:value]
+            meta_key = MetaKey.find(meta_key_id) 
+            existing_meta_data = meta_data.where("meta_key_id = ?", meta_key_id)
+            if existing_meta_data.count > 0 
+              if not meta_datum_hash[:keep_original_value_if_exists]
+                existing_meta_data.destroy_all 
+                create_meta_datum meta_key, meta_datum_hash[:value]
+              else
+                # NOTE it exists and should not be overwritten; so we leave it alone
+              end
+            else # doesn't exist, so we create it (maybe)
+              create_meta_datum meta_key, meta_datum_hash[:value]
+            end
           end
         end
+
+        ###################
 
 
         def context_valid?(context = MetaContext.find("core"))
