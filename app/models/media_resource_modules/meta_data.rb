@@ -92,21 +92,23 @@ module MediaResourceModules
         end
 
         def set_meta_data meta_data_hash
-          meta_data_hash.symbolize_keys[:meta_data_attributes] \
-            .map{|k,v|[k,v.symbolize_keys]}.each do |k,meta_datum_hash|
-            # TODO deprecate meta_key_label
-            meta_key_id = (meta_datum_hash[:meta_key_id] or meta_datum_hash[:meta_key_label])
-            meta_key = MetaKey.find(meta_key_id) 
-            existing_meta_data = meta_data.where("meta_key_id = ?", meta_key_id)
-            if existing_meta_data.count > 0 
-              if not meta_datum_hash[:keep_original_value_if_exists]
-                existing_meta_data.destroy_all 
+          if meta_data_attributes = meta_data_hash.symbolize_keys[:meta_data_attributes] 
+            meta_data_attributes.map{|k,v|[k,v.symbolize_keys]}.each do |k,meta_datum_hash|
+              binding.pry
+              # TODO deprecate meta_key_label
+              meta_key_id = (meta_datum_hash[:meta_key_id] or meta_datum_hash[:meta_key_label])
+              meta_key = MetaKey.find(meta_key_id) 
+              existing_meta_data = meta_data.where("meta_key_id = ?", meta_key_id)
+              if existing_meta_data.count > 0 
+                if not meta_datum_hash[:keep_original_value_if_exists]
+                  existing_meta_data.destroy_all 
+                  create_meta_datum meta_key, meta_datum_hash[:value]
+                else
+                  # NOTE it exists and should not be overwritten; so we leave it alone
+                end
+              else # doesn't exist, so we create it (maybe)
                 create_meta_datum meta_key, meta_datum_hash[:value]
-              else
-                # NOTE it exists and should not be overwritten; so we leave it alone
               end
-            else # doesn't exist, so we create it (maybe)
-              create_meta_datum meta_key, meta_datum_hash[:value]
             end
           end
         end
