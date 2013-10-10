@@ -55,7 +55,7 @@ describe MediaResource do
     context "meta_data" do
 
       before :each do
-        @media_entry.update_attributes({:meta_data_attributes => {"0" => {:meta_key_label => "author", :value => "Pablo Picasso"}}})
+        @media_entry.set_meta_data({:meta_data_attributes => {"0" => {:meta_key_label => "author", :value => "Pablo Picasso"}}})
       end
       
       it "exports person meta_data as string for exiftool, not as ruby object" do
