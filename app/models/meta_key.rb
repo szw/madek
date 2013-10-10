@@ -27,6 +27,9 @@ class MetaKey < ActiveRecord::Base
     id
   end
 
+  def get_meta_datum_class
+    Kernel.const_get(meta_datum_object_type)
+  end
 ########################################################
 
   before_update do

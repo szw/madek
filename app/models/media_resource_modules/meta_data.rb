@@ -89,8 +89,7 @@ module MediaResourceModules
             meta_key_id = (meta_datum_hash[:meta_key_id] or meta_datum_hash[:meta_key_label])
             meta_key = MetaKey.find(meta_key_id)
             meta_data.where("meta_key_id = ?", meta_key_id).destroy_all
-            klass = Kernel.const_get(meta_key.meta_datum_object_type)
-            meta_datum= klass.create! meta_key_id: meta_key.id, media_resource_id: self.id, value: meta_datum_hash[:value]
+            meta_datum= meta_key.get_meta_datum_class.create! meta_key_id: meta_key.id, media_resource_id: self.id, value: meta_datum_hash[:value]
           end
         end
 
