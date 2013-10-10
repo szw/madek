@@ -85,7 +85,7 @@ module MediaResourceModules
         end
 
         def create_meta_datum meta_key, value
-          unless value and not value.blank?
+          if value and not value.blank?
             meta_key.get_meta_datum_class.create! meta_key_id: meta_key.id, 
               media_resource_id: self.id, value: value
           end
