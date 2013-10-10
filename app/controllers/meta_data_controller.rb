@@ -9,7 +9,7 @@ class MetaDataController < ApplicationController
         { meta_key_label: params[:id], value: params[:value]} }}
 
       ActiveRecord::Base.transaction do
-        if @media_resource.update_attributes attributes
+        if @media_resource.set_meta_data attributes
           @media_resource.editors << current_user
           @media_resource.touch
           render json: {}
@@ -53,7 +53,7 @@ class MetaDataController < ApplicationController
         ActiveRecord::Base.transaction do
           @media_resources.each do |media_resource|
 
-            if media_resource.update_attributes attributes
+            if media_resource.set_meta_data attributes
               media_resource.editors << current_user
               media_resource.touch
             else
