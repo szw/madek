@@ -94,7 +94,6 @@ module MediaResourceModules
         def set_meta_data meta_data_hash
           if meta_data_attributes = meta_data_hash.symbolize_keys[:meta_data_attributes] 
             meta_data_attributes.map{|k,v|[k,v.symbolize_keys]}.each do |k,meta_datum_hash|
-              binding.pry
               # TODO deprecate meta_key_label
               meta_key_id = (meta_datum_hash[:meta_key_id] or meta_datum_hash[:meta_key_label])
               meta_key = MetaKey.find(meta_key_id) 
