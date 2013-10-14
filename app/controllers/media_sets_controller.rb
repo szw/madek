@@ -150,12 +150,16 @@ class MediaSetsController < ApplicationController
       attr.each_pair do |k,v|
         media_set = current_user.media_sets.create
         media_set.update_attributes(v)
+        media_set.set_meta_data v.slice("meta_data_attributes")
+        media_set.update_attributes! v.except("meta_data_attributes")
         @media_sets << media_set
         is_saved = (is_saved and media_set.save)
       end
     else # CREATE SINGLE
       @media_set = current_user.media_sets.create
-      is_saved = @media_set.update_attributes(attr)
+      @media_set.set_meta_data attr.slice("meta_data_attributes")
+      @media_set.update_attributes! attr.except("meta_data_attributes")
+      is_saved = @media_set.save
     end
 
     # we are actually creating a filter_set
