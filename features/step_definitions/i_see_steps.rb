@@ -276,3 +276,9 @@ end
 Then /^I see sets of the featured sets$/ do
   expect( find("#featured-set .grid").all("li.ui-resource").size ).to be > 0
 end
+
+Then /^I see the return link in the navbar$/ do
+  link = find('.navbar .navbar-right a')
+  expect(link.text).to match /return to user\-interface/
+  expect(link[:href]).to eq("/")
+end
