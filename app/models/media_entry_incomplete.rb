@@ -81,14 +81,14 @@ class MediaEntryIncomplete < MediaEntry
             end
           end
         else
-          Array(entry_value).each do |value_s|
+          Array[entry_value].each do |value_s|
             meta_key = MetaKey.meta_key_for(entry_key) #working here#10 , MetaContext.file_embedded)
             next if value_s.blank? or meta_data.detect {|md| md.meta_key == meta_key } # we do sometimes receive a blank value in metadata, hence the check.
             value_s.gsub!(/\\n/,"\n") if value_s.is_a?(String) # OPTIMIZE line breaks in text are broken somehow
             begin
               meta_data.build(:meta_key => meta_key, :value => value_s)
-            rescue
-              # ignoring silently, don't blocking the import process
+            rescue Exception => e
+              Rails.logger.error Formatter.exception_to_log_s(e)
             end
           end
         end
