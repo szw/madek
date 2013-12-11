@@ -80,8 +80,6 @@ CREATE TABLE copyrights (
     is_custom boolean DEFAULT false,
     label character varying(255),
     parent_id integer,
-    lft integer,
-    rgt integer,
     usage character varying(255),
     url character varying(255)
 );
@@ -104,13 +102,6 @@ CREATE SEQUENCE copyrights_id_seq
 --
 
 ALTER SEQUENCE copyrights_id_seq OWNED BY copyrights.id;
-
-
---
--- Name: copyrights_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('copyrights_id_seq', 1, false);
 
 
 --
@@ -143,13 +134,6 @@ CREATE SEQUENCE edit_sessions_id_seq
 --
 
 ALTER SEQUENCE edit_sessions_id_seq OWNED BY edit_sessions.id;
-
-
---
--- Name: edit_sessions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('edit_sessions_id_seq', 1, false);
 
 
 --
@@ -193,13 +177,6 @@ ALTER SEQUENCE full_texts_id_seq OWNED BY full_texts.id;
 
 
 --
--- Name: full_texts_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('full_texts_id_seq', 1, false);
-
-
---
 -- Name: grouppermissions; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -208,9 +185,9 @@ CREATE TABLE grouppermissions (
     media_resource_id integer NOT NULL,
     group_id integer NOT NULL,
     download boolean DEFAULT false NOT NULL,
+    view boolean DEFAULT false NOT NULL,
     edit boolean DEFAULT false NOT NULL,
     manage boolean DEFAULT false NOT NULL,
-    view boolean DEFAULT false NOT NULL,
     CONSTRAINT manage_on_grouppermissions_is_false CHECK ((manage = false))
 );
 
@@ -232,13 +209,6 @@ CREATE SEQUENCE grouppermissions_id_seq
 --
 
 ALTER SEQUENCE grouppermissions_id_seq OWNED BY grouppermissions.id;
-
-
---
--- Name: grouppermissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('grouppermissions_id_seq', 1, false);
 
 
 --
@@ -271,13 +241,6 @@ CREATE SEQUENCE groups_id_seq
 --
 
 ALTER SEQUENCE groups_id_seq OWNED BY groups.id;
-
-
---
--- Name: groups_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('groups_id_seq', 1, false);
 
 
 --
@@ -323,13 +286,6 @@ ALTER SEQUENCE keywords_id_seq OWNED BY keywords.id;
 
 
 --
--- Name: keywords_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('keywords_id_seq', 1, false);
-
-
---
 -- Name: media_files; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -371,13 +327,6 @@ ALTER SEQUENCE media_files_id_seq OWNED BY media_files.id;
 
 
 --
--- Name: media_files_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('media_files_id_seq', 1, false);
-
-
---
 -- Name: media_resource_arcs; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -408,13 +357,6 @@ CREATE SEQUENCE media_resource_arcs_id_seq
 --
 
 ALTER SEQUENCE media_resource_arcs_id_seq OWNED BY media_resource_arcs.id;
-
-
---
--- Name: media_resource_arcs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('media_resource_arcs_id_seq', 1, false);
 
 
 --
@@ -458,13 +400,6 @@ ALTER SEQUENCE media_resources_id_seq OWNED BY media_resources.id;
 
 
 --
--- Name: media_resources_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('media_resources_id_seq', 1, false);
-
-
---
 -- Name: media_sets_meta_contexts; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -502,13 +437,6 @@ CREATE SEQUENCE meta_context_groups_id_seq
 --
 
 ALTER SEQUENCE meta_context_groups_id_seq OWNED BY meta_context_groups.id;
-
-
---
--- Name: meta_context_groups_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('meta_context_groups_id_seq', 1, false);
 
 
 --
@@ -556,13 +484,6 @@ CREATE SEQUENCE meta_data_id_seq
 --
 
 ALTER SEQUENCE meta_data_id_seq OWNED BY meta_data.id;
-
-
---
--- Name: meta_data_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('meta_data_id_seq', 1, false);
 
 
 --
@@ -647,13 +568,6 @@ ALTER SEQUENCE meta_key_definitions_id_seq OWNED BY meta_key_definitions.id;
 
 
 --
--- Name: meta_key_definitions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('meta_key_definitions_id_seq', 1, false);
-
-
---
 -- Name: meta_keys; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -696,13 +610,6 @@ ALTER SEQUENCE meta_keys_meta_terms_id_seq OWNED BY meta_keys_meta_terms.id;
 
 
 --
--- Name: meta_keys_meta_terms_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('meta_keys_meta_terms_id_seq', 1, false);
-
-
---
 -- Name: meta_terms; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -730,13 +637,6 @@ CREATE SEQUENCE meta_terms_id_seq
 --
 
 ALTER SEQUENCE meta_terms_id_seq OWNED BY meta_terms.id;
-
-
---
--- Name: meta_terms_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('meta_terms_id_seq', 1, false);
 
 
 --
@@ -776,13 +676,6 @@ ALTER SEQUENCE people_id_seq OWNED BY people.id;
 
 
 --
--- Name: people_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('people_id_seq', 1, false);
-
-
---
 -- Name: permission_presets; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -790,9 +683,9 @@ CREATE TABLE permission_presets (
     id integer NOT NULL,
     name character varying(255),
     download boolean DEFAULT false NOT NULL,
+    view boolean DEFAULT false NOT NULL,
     edit boolean DEFAULT false NOT NULL,
-    manage boolean DEFAULT false NOT NULL,
-    view boolean DEFAULT false NOT NULL
+    manage boolean DEFAULT false NOT NULL
 );
 
 
@@ -813,13 +706,6 @@ CREATE SEQUENCE permission_presets_id_seq
 --
 
 ALTER SEQUENCE permission_presets_id_seq OWNED BY permission_presets.id;
-
-
---
--- Name: permission_presets_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('permission_presets_id_seq', 1, false);
 
 
 --
@@ -856,13 +742,6 @@ CREATE SEQUENCE previews_id_seq
 --
 
 ALTER SEQUENCE previews_id_seq OWNED BY previews.id;
-
-
---
--- Name: previews_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('previews_id_seq', 1, false);
 
 
 --
@@ -908,13 +787,6 @@ ALTER SEQUENCE usage_terms_id_seq OWNED BY usage_terms.id;
 
 
 --
--- Name: usage_terms_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('usage_terms_id_seq', 1, false);
-
-
---
 -- Name: userpermissions; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -923,9 +795,9 @@ CREATE TABLE userpermissions (
     media_resource_id integer NOT NULL,
     user_id integer NOT NULL,
     download boolean DEFAULT false NOT NULL,
+    view boolean DEFAULT false NOT NULL,
     edit boolean DEFAULT false NOT NULL,
-    manage boolean DEFAULT false NOT NULL,
-    view boolean DEFAULT false NOT NULL
+    manage boolean DEFAULT false NOT NULL
 );
 
 
@@ -946,13 +818,6 @@ CREATE SEQUENCE userpermissions_id_seq
 --
 
 ALTER SEQUENCE userpermissions_id_seq OWNED BY userpermissions.id;
-
-
---
--- Name: userpermissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('userpermissions_id_seq', 1, false);
 
 
 --
@@ -990,13 +855,6 @@ CREATE SEQUENCE users_id_seq
 --
 
 ALTER SEQUENCE users_id_seq OWNED BY users.id;
-
-
---
--- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('users_id_seq', 1, false);
 
 
 --
@@ -1168,261 +1026,6 @@ ALTER TABLE ONLY userpermissions ALTER COLUMN id SET DEFAULT nextval('userpermis
 --
 
 ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
-
-
---
--- Data for Name: app_settings; Type: TABLE DATA; Schema: public; Owner: -
---
-
-INSERT INTO app_settings VALUES (0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2013-10-09 08:35:49.923724', '2013-10-09 08:35:49.984166', '/assets/inserts/image-logo-zhdk.png', 'Zürcher Hochschule der Künste', '{"About the project":"http://www.zhdk.ch/?madek","Impressum":"http://www.zhdk.ch/index.php?id=12970","Contact":"http://www.zhdk.ch/index.php?id=49591","Help":"http://wiki.zhdk.ch/madek-hilfe","Terms of Use":"https://wiki.zhdk.ch/madek-hilfe/doku.php?id=terms","Archivierungsrichtlinien ZHdK":"http://www.zhdk.ch/?archivierung"}', NULL, NULL);
-
-
---
--- Data for Name: copyrights; Type: TABLE DATA; Schema: public; Owner: -
---
-
-
-
---
--- Data for Name: edit_sessions; Type: TABLE DATA; Schema: public; Owner: -
---
-
-
-
---
--- Data for Name: favorites; Type: TABLE DATA; Schema: public; Owner: -
---
-
-
-
---
--- Data for Name: full_texts; Type: TABLE DATA; Schema: public; Owner: -
---
-
-
-
---
--- Data for Name: grouppermissions; Type: TABLE DATA; Schema: public; Owner: -
---
-
-
-
---
--- Data for Name: groups; Type: TABLE DATA; Schema: public; Owner: -
---
-
-
-
---
--- Data for Name: groups_users; Type: TABLE DATA; Schema: public; Owner: -
---
-
-
-
---
--- Data for Name: keywords; Type: TABLE DATA; Schema: public; Owner: -
---
-
-
-
---
--- Data for Name: media_files; Type: TABLE DATA; Schema: public; Owner: -
---
-
-
-
---
--- Data for Name: media_resource_arcs; Type: TABLE DATA; Schema: public; Owner: -
---
-
-
-
---
--- Data for Name: media_resources; Type: TABLE DATA; Schema: public; Owner: -
---
-
-
-
---
--- Data for Name: media_sets_meta_contexts; Type: TABLE DATA; Schema: public; Owner: -
---
-
-
-
---
--- Data for Name: meta_context_groups; Type: TABLE DATA; Schema: public; Owner: -
---
-
-
-
---
--- Data for Name: meta_contexts; Type: TABLE DATA; Schema: public; Owner: -
---
-
-
-
---
--- Data for Name: meta_data; Type: TABLE DATA; Schema: public; Owner: -
---
-
-
-
---
--- Data for Name: meta_data_meta_departments; Type: TABLE DATA; Schema: public; Owner: -
---
-
-
-
---
--- Data for Name: meta_data_meta_terms; Type: TABLE DATA; Schema: public; Owner: -
---
-
-
-
---
--- Data for Name: meta_data_people; Type: TABLE DATA; Schema: public; Owner: -
---
-
-
-
---
--- Data for Name: meta_data_users; Type: TABLE DATA; Schema: public; Owner: -
---
-
-
-
---
--- Data for Name: meta_key_definitions; Type: TABLE DATA; Schema: public; Owner: -
---
-
-
-
---
--- Data for Name: meta_keys; Type: TABLE DATA; Schema: public; Owner: -
---
-
-
-
---
--- Data for Name: meta_keys_meta_terms; Type: TABLE DATA; Schema: public; Owner: -
---
-
-
-
---
--- Data for Name: meta_terms; Type: TABLE DATA; Schema: public; Owner: -
---
-
-
-
---
--- Data for Name: people; Type: TABLE DATA; Schema: public; Owner: -
---
-
-
-
---
--- Data for Name: permission_presets; Type: TABLE DATA; Schema: public; Owner: -
---
-
-
-
---
--- Data for Name: previews; Type: TABLE DATA; Schema: public; Owner: -
---
-
-
-
---
--- Data for Name: schema_migrations; Type: TABLE DATA; Schema: public; Owner: -
---
-
-INSERT INTO schema_migrations VALUES ('1');
-INSERT INTO schema_migrations VALUES ('2');
-INSERT INTO schema_migrations VALUES ('3');
-INSERT INTO schema_migrations VALUES ('4');
-INSERT INTO schema_migrations VALUES ('5');
-INSERT INTO schema_migrations VALUES ('6');
-INSERT INTO schema_migrations VALUES ('7');
-INSERT INTO schema_migrations VALUES ('8');
-INSERT INTO schema_migrations VALUES ('9');
-INSERT INTO schema_migrations VALUES ('10');
-INSERT INTO schema_migrations VALUES ('11');
-INSERT INTO schema_migrations VALUES ('12');
-INSERT INTO schema_migrations VALUES ('13');
-INSERT INTO schema_migrations VALUES ('14');
-INSERT INTO schema_migrations VALUES ('15');
-INSERT INTO schema_migrations VALUES ('16');
-INSERT INTO schema_migrations VALUES ('17');
-INSERT INTO schema_migrations VALUES ('18');
-INSERT INTO schema_migrations VALUES ('19');
-INSERT INTO schema_migrations VALUES ('20');
-INSERT INTO schema_migrations VALUES ('21');
-INSERT INTO schema_migrations VALUES ('22');
-INSERT INTO schema_migrations VALUES ('23');
-INSERT INTO schema_migrations VALUES ('24');
-INSERT INTO schema_migrations VALUES ('25');
-INSERT INTO schema_migrations VALUES ('26');
-INSERT INTO schema_migrations VALUES ('27');
-INSERT INTO schema_migrations VALUES ('20120820201434');
-INSERT INTO schema_migrations VALUES ('20120924093527');
-INSERT INTO schema_migrations VALUES ('20121005071336');
-INSERT INTO schema_migrations VALUES ('20121010120938');
-INSERT INTO schema_migrations VALUES ('20121015130831');
-INSERT INTO schema_migrations VALUES ('20121116101855');
-INSERT INTO schema_migrations VALUES ('20121203135807');
-INSERT INTO schema_migrations VALUES ('20121204093504');
-INSERT INTO schema_migrations VALUES ('20121217084234');
-INSERT INTO schema_migrations VALUES ('20121219115031');
-INSERT INTO schema_migrations VALUES ('20130205144924');
-INSERT INTO schema_migrations VALUES ('20130314163226');
-INSERT INTO schema_migrations VALUES ('20130319073038');
-INSERT INTO schema_migrations VALUES ('20130322131740');
-INSERT INTO schema_migrations VALUES ('20130326190454');
-INSERT INTO schema_migrations VALUES ('20130411071654');
-INSERT INTO schema_migrations VALUES ('20130415080622');
-INSERT INTO schema_migrations VALUES ('20130415130815');
-INSERT INTO schema_migrations VALUES ('20130416103629');
-INSERT INTO schema_migrations VALUES ('20130417063225');
-INSERT INTO schema_migrations VALUES ('20130417092015');
-INSERT INTO schema_migrations VALUES ('20130419063314');
-INSERT INTO schema_migrations VALUES ('20130617115706');
-INSERT INTO schema_migrations VALUES ('20130618071639');
-INSERT INTO schema_migrations VALUES ('20130716084432');
-INSERT INTO schema_migrations VALUES ('20130716091049');
-INSERT INTO schema_migrations VALUES ('20130920133708');
-INSERT INTO schema_migrations VALUES ('20130923085830');
-INSERT INTO schema_migrations VALUES ('20131009083332');
-
-
---
--- Data for Name: usage_terms; Type: TABLE DATA; Schema: public; Owner: -
---
-
-
-
---
--- Data for Name: userpermissions; Type: TABLE DATA; Schema: public; Owner: -
---
-
-
-
---
--- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: -
---
-
-
-
---
--- Data for Name: visualizations; Type: TABLE DATA; Schema: public; Owner: -
---
-
-
-
---
--- Data for Name: zencoder_jobs; Type: TABLE DATA; Schema: public; Owner: -
---
-
 
 
 --
@@ -1658,13 +1261,6 @@ CREATE INDEX index_copyrights_on_is_default ON copyrights USING btree (is_defaul
 --
 
 CREATE UNIQUE INDEX index_copyrights_on_label ON copyrights USING btree (label);
-
-
---
--- Name: index_copyrights_on_lft_and_rgt; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_copyrights_on_lft_and_rgt ON copyrights USING btree (lft, rgt);
 
 
 --
@@ -2433,6 +2029,14 @@ ALTER TABLE ONLY meta_keys_meta_terms
 
 
 --
+-- Name: parent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY copyrights
+    ADD CONSTRAINT parent_id_fkey FOREIGN KEY (parent_id) REFERENCES copyrights(id);
+
+
+--
 -- Name: previews_media_file_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2478,3 +2082,116 @@ ALTER TABLE ONLY zencoder_jobs
 
 SET search_path TO "$user",public;
 
+INSERT INTO schema_migrations (version) VALUES ('1');
+
+INSERT INTO schema_migrations (version) VALUES ('10');
+
+INSERT INTO schema_migrations (version) VALUES ('11');
+
+INSERT INTO schema_migrations (version) VALUES ('12');
+
+INSERT INTO schema_migrations (version) VALUES ('13');
+
+INSERT INTO schema_migrations (version) VALUES ('14');
+
+INSERT INTO schema_migrations (version) VALUES ('15');
+
+INSERT INTO schema_migrations (version) VALUES ('16');
+
+INSERT INTO schema_migrations (version) VALUES ('17');
+
+INSERT INTO schema_migrations (version) VALUES ('18');
+
+INSERT INTO schema_migrations (version) VALUES ('19');
+
+INSERT INTO schema_migrations (version) VALUES ('2');
+
+INSERT INTO schema_migrations (version) VALUES ('20');
+
+INSERT INTO schema_migrations (version) VALUES ('20120820201434');
+
+INSERT INTO schema_migrations (version) VALUES ('20120924093527');
+
+INSERT INTO schema_migrations (version) VALUES ('20121005071336');
+
+INSERT INTO schema_migrations (version) VALUES ('20121010120938');
+
+INSERT INTO schema_migrations (version) VALUES ('20121015130831');
+
+INSERT INTO schema_migrations (version) VALUES ('20121116101855');
+
+INSERT INTO schema_migrations (version) VALUES ('20121203135807');
+
+INSERT INTO schema_migrations (version) VALUES ('20121204093504');
+
+INSERT INTO schema_migrations (version) VALUES ('20121217084234');
+
+INSERT INTO schema_migrations (version) VALUES ('20121219115031');
+
+INSERT INTO schema_migrations (version) VALUES ('20130205144924');
+
+INSERT INTO schema_migrations (version) VALUES ('20130314163226');
+
+INSERT INTO schema_migrations (version) VALUES ('20130319073038');
+
+INSERT INTO schema_migrations (version) VALUES ('20130322131740');
+
+INSERT INTO schema_migrations (version) VALUES ('20130326190454');
+
+INSERT INTO schema_migrations (version) VALUES ('20130411071654');
+
+INSERT INTO schema_migrations (version) VALUES ('20130415080622');
+
+INSERT INTO schema_migrations (version) VALUES ('20130415130815');
+
+INSERT INTO schema_migrations (version) VALUES ('20130416103629');
+
+INSERT INTO schema_migrations (version) VALUES ('20130417063225');
+
+INSERT INTO schema_migrations (version) VALUES ('20130417092015');
+
+INSERT INTO schema_migrations (version) VALUES ('20130419063314');
+
+INSERT INTO schema_migrations (version) VALUES ('20130617115706');
+
+INSERT INTO schema_migrations (version) VALUES ('20130618071639');
+
+INSERT INTO schema_migrations (version) VALUES ('20130716084432');
+
+INSERT INTO schema_migrations (version) VALUES ('20130716091049');
+
+INSERT INTO schema_migrations (version) VALUES ('20130920133708');
+
+INSERT INTO schema_migrations (version) VALUES ('20130923085830');
+
+INSERT INTO schema_migrations (version) VALUES ('20131009083332');
+
+INSERT INTO schema_migrations (version) VALUES ('20131105100927');
+
+INSERT INTO schema_migrations (version) VALUES ('21');
+
+INSERT INTO schema_migrations (version) VALUES ('22');
+
+INSERT INTO schema_migrations (version) VALUES ('23');
+
+INSERT INTO schema_migrations (version) VALUES ('24');
+
+INSERT INTO schema_migrations (version) VALUES ('25');
+
+INSERT INTO schema_migrations (version) VALUES ('26');
+
+INSERT INTO schema_migrations (version) VALUES ('27');
+
+INSERT INTO schema_migrations (version) VALUES ('3');
+
+INSERT INTO schema_migrations (version) VALUES ('4');
+
+INSERT INTO schema_migrations (version) VALUES ('5');
+
+INSERT INTO schema_migrations (version) VALUES ('6');
+
+INSERT INTO schema_migrations (version) VALUES ('7');
+
+INSERT INTO schema_migrations (version) VALUES ('8');
+
+INSERT INTO schema_migrations (version) VALUES ('9');
