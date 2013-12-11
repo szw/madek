@@ -81,8 +81,15 @@ class MediaEntryIncomplete < MediaEntry
             end
           end
         else
-          Array[entry_value].each do |value_s|
-            meta_key = MetaKey.meta_key_for(entry_key) #working here#10 , MetaContext.file_embedded)
+          meta_key = MetaKey.meta_key_for(entry_key) 
+
+          case meta_key.meta_datum_object_type
+          when "MetaDatumKeywords", "MetaDatumPeople", 
+            "MetaDatumUsers", "MetaDatumDepartments", "MetaDatumMetaTerms" 
+            Array[entry_value]
+          else
+            Array(entry_value)
+          end.each do |value_s|
             next if value_s.blank? or meta_data.detect {|md| md.meta_key == meta_key } # we do sometimes receive a blank value in metadata, hence the check.
             value_s.gsub!(/\\n/,"\n") if value_s.is_a?(String) # OPTIMIZE line breaks in text are broken somehow
             begin
