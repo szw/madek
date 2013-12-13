@@ -24,7 +24,7 @@ gem 'textacular', git: 'https://github.com/DrTom/textacular.git'
 
 # THE REST
 gem 'animation'
-gem 'bcrypt-ruby', '~> 3.0.0'
+gem 'bcrypt-ruby', '~> 3.1.2'
 gem 'better_errors', group: [:development]
 gem 'binding_of_caller', platform: :mri, group: [:development]
 gem 'bootstrap-sass' 
