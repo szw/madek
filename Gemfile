@@ -10,7 +10,7 @@ source 'http://rubygems.org'
 source 'http://gems.github.com'
 
 # RAILS
-gem 'rails', '4.0.0'
+gem 'rails', '4.0.2'
 
 
 # DATABASE
@@ -65,8 +65,8 @@ gem 'rails_autolink', '~> 1.0'
 gem 'rest-client', group: [:test, :development, :personas]
 gem 'rspec-rails', group: [:test, :development, :personas]
 gem 'rvm-capistrano', group: [:development, :personas]
-gem 'sass-rails', '~> 4.0.0'
-gem 'sass', '3.2.10'
+gem 'sass-rails', '~> 4.0.1'
+gem 'sass', '3.2.12'
 gem 'selenium-webdriver', group: [:test]
 gem 'therubyracer', platform: :mri, group: [:development, :production, :test]
 gem 'therubyrhino', platform: :jruby, group: [:development, :production, :test]
