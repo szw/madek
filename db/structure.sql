@@ -185,9 +185,9 @@ CREATE TABLE grouppermissions (
     media_resource_id integer NOT NULL,
     group_id integer NOT NULL,
     download boolean DEFAULT false NOT NULL,
-    view boolean DEFAULT false NOT NULL,
     edit boolean DEFAULT false NOT NULL,
     manage boolean DEFAULT false NOT NULL,
+    view boolean DEFAULT false NOT NULL,
     CONSTRAINT manage_on_grouppermissions_is_false CHECK ((manage = false))
 );
 
@@ -683,9 +683,9 @@ CREATE TABLE permission_presets (
     id integer NOT NULL,
     name character varying(255),
     download boolean DEFAULT false NOT NULL,
-    view boolean DEFAULT false NOT NULL,
     edit boolean DEFAULT false NOT NULL,
-    manage boolean DEFAULT false NOT NULL
+    manage boolean DEFAULT false NOT NULL,
+    view boolean DEFAULT false NOT NULL
 );
 
 
@@ -795,9 +795,9 @@ CREATE TABLE userpermissions (
     media_resource_id integer NOT NULL,
     user_id integer NOT NULL,
     download boolean DEFAULT false NOT NULL,
-    view boolean DEFAULT false NOT NULL,
     edit boolean DEFAULT false NOT NULL,
-    manage boolean DEFAULT false NOT NULL
+    manage boolean DEFAULT false NOT NULL,
+    view boolean DEFAULT false NOT NULL
 );
 
 
