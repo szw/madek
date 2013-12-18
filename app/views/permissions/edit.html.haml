@@ -72,7 +72,7 @@
             .col1of2
               %h2.title-l.ui-info-box-title Ihre Berechtigungen
               %p.ui-info-box-intro Sie, #{current_user}, haben gegenwärtig als Person oder als Mitglied einer Gruppe folgende Berechtigungen
-              %ul.inline.capitilize
+              %ul.inline
                 - action_map= {view: "View", download: "Export original", edit: "Edit metadata" , manage: "Manage permissions"}
                 - [:view, :download, :edit, :manage].each do |action|
                   - if @media_resources.accessible_by_user(current_user,action).count == @media_resources.count
