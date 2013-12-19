@@ -255,29 +255,10 @@ CREATE TABLE media_sets_meta_contexts (
 --
 
 CREATE TABLE meta_context_groups (
-    id integer NOT NULL,
     name character varying(255),
-    "position" integer NOT NULL
+    "position" integer NOT NULL,
+    id uuid DEFAULT uuid_generate_v4() NOT NULL
 );
-
-
---
--- Name: meta_context_groups_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE meta_context_groups_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: meta_context_groups_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE meta_context_groups_id_seq OWNED BY meta_context_groups.id;
 
 
 --
@@ -287,10 +268,10 @@ ALTER SEQUENCE meta_context_groups_id_seq OWNED BY meta_context_groups.id;
 CREATE TABLE meta_contexts (
     label_id integer NOT NULL,
     description_id integer,
-    meta_context_group_id integer,
     is_user_interface boolean DEFAULT false,
     "position" integer,
-    name character varying(255) NOT NULL
+    name character varying(255) NOT NULL,
+    meta_context_group_id uuid
 );
 
 
@@ -651,13 +632,6 @@ CREATE TABLE zencoder_jobs (
     updated_at timestamp without time zone NOT NULL,
     media_file_id uuid
 );
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY meta_context_groups ALTER COLUMN id SET DEFAULT nextval('meta_context_groups_id_seq'::regclass);
 
 
 --
@@ -1141,6 +1115,13 @@ CREATE INDEX index_meta_context_groups_on_position ON meta_context_groups USING 
 
 
 --
+-- Name: index_meta_contexts_on_meta_context_group_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_meta_contexts_on_meta_context_group_id ON meta_contexts USING btree (meta_context_group_id);
+
+
+--
 -- Name: index_meta_contexts_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1549,7 +1530,7 @@ ALTER TABLE ONLY meta_contexts
 --
 
 ALTER TABLE ONLY meta_contexts
-    ADD CONSTRAINT meta_contexts_meta_context_group_id_fk FOREIGN KEY (meta_context_group_id) REFERENCES meta_context_groups(id);
+    ADD CONSTRAINT meta_contexts_meta_context_group_id_fk FOREIGN KEY (meta_context_group_id) REFERENCES meta_context_groups(id) ON DELETE SET NULL;
 
 
 --
@@ -1827,6 +1808,8 @@ INSERT INTO schema_migrations (version) VALUES ('20131219103529');
 INSERT INTO schema_migrations (version) VALUES ('20131219134429');
 
 INSERT INTO schema_migrations (version) VALUES ('20131219141740');
+
+INSERT INTO schema_migrations (version) VALUES ('20131219142324');
 
 INSERT INTO schema_migrations (version) VALUES ('21');
 
