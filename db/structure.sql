@@ -176,11 +176,11 @@ CREATE TABLE groups_users (
 --
 
 CREATE TABLE keywords (
-    meta_term_id integer NOT NULL,
     user_id integer,
     created_at timestamp without time zone,
     id uuid DEFAULT uuid_generate_v4() NOT NULL,
-    meta_datum_id uuid
+    meta_datum_id uuid,
+    meta_term_id uuid
 );
 
 
@@ -266,12 +266,12 @@ CREATE TABLE meta_context_groups (
 --
 
 CREATE TABLE meta_contexts (
-    label_id integer NOT NULL,
-    description_id integer,
     is_user_interface boolean DEFAULT false,
     "position" integer,
     name character varying(255) NOT NULL,
-    meta_context_group_id uuid
+    meta_context_group_id uuid,
+    description_id uuid,
+    label_id uuid NOT NULL
 );
 
 
@@ -304,8 +304,8 @@ CREATE TABLE meta_data_meta_departments (
 --
 
 CREATE TABLE meta_data_meta_terms (
-    meta_term_id integer NOT NULL,
-    meta_datum_id uuid
+    meta_datum_id uuid,
+    meta_term_id uuid NOT NULL
 );
 
 
@@ -334,9 +334,6 @@ CREATE TABLE meta_data_users (
 --
 
 CREATE TABLE meta_key_definitions (
-    description_id integer,
-    hint_id integer,
-    label_id integer,
     is_required boolean DEFAULT false,
     length_max integer,
     length_min integer,
@@ -347,7 +344,10 @@ CREATE TABLE meta_key_definitions (
     updated_at timestamp without time zone NOT NULL,
     meta_key_id character varying(255),
     meta_context_name character varying(255),
-    id uuid DEFAULT uuid_generate_v4() NOT NULL
+    id uuid DEFAULT uuid_generate_v4() NOT NULL,
+    description_id uuid,
+    label_id uuid,
+    hint_id uuid
 );
 
 
@@ -367,10 +367,10 @@ CREATE TABLE meta_keys (
 --
 
 CREATE TABLE meta_keys_meta_terms (
-    meta_term_id integer NOT NULL,
     "position" integer DEFAULT 0 NOT NULL,
     meta_key_id character varying(255),
-    id uuid DEFAULT uuid_generate_v4() NOT NULL
+    id uuid DEFAULT uuid_generate_v4() NOT NULL,
+    meta_term_id uuid NOT NULL
 );
 
 
@@ -379,29 +379,10 @@ CREATE TABLE meta_keys_meta_terms (
 --
 
 CREATE TABLE meta_terms (
-    id integer NOT NULL,
     en_gb character varying(255),
-    de_ch character varying(255)
+    de_ch character varying(255),
+    id uuid DEFAULT uuid_generate_v4() NOT NULL
 );
-
-
---
--- Name: meta_terms_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE meta_terms_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: meta_terms_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE meta_terms_id_seq OWNED BY meta_terms.id;
 
 
 --
@@ -594,13 +575,6 @@ CREATE TABLE zencoder_jobs (
     updated_at timestamp without time zone NOT NULL,
     media_file_id uuid
 );
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY meta_terms ALTER COLUMN id SET DEFAULT nextval('meta_terms_id_seq'::regclass);
 
 
 --
@@ -944,10 +918,10 @@ CREATE INDEX index_keywords_on_meta_datum_id ON keywords USING btree (meta_datum
 
 
 --
--- Name: index_keywords_on_meta_term_id_and_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_keywords_on_meta_term_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE INDEX index_keywords_on_meta_term_id_and_user_id ON keywords USING btree (meta_term_id, user_id);
+CREATE INDEX index_keywords_on_meta_term_id ON keywords USING btree (meta_term_id);
 
 
 --
@@ -1063,6 +1037,20 @@ CREATE INDEX index_meta_context_groups_on_position ON meta_context_groups USING 
 
 
 --
+-- Name: index_meta_contexts_on_description_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_meta_contexts_on_description_id ON meta_contexts USING btree (description_id);
+
+
+--
+-- Name: index_meta_contexts_on_label_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_meta_contexts_on_label_id ON meta_contexts USING btree (label_id);
+
+
+--
 -- Name: index_meta_contexts_on_meta_context_group_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1112,10 +1100,10 @@ CREATE INDEX index_meta_data_meta_terms_on_meta_datum_id ON meta_data_meta_terms
 
 
 --
--- Name: index_meta_data_meta_terms_on_meta_datum_id_and_meta_term_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_meta_data_meta_terms_on_meta_term_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE UNIQUE INDEX index_meta_data_meta_terms_on_meta_datum_id_and_meta_term_id ON meta_data_meta_terms USING btree (meta_datum_id, meta_term_id);
+CREATE INDEX index_meta_data_meta_terms_on_meta_term_id ON meta_data_meta_terms USING btree (meta_term_id);
 
 
 --
@@ -1168,6 +1156,27 @@ CREATE UNIQUE INDEX index_meta_data_users_on_meta_datum_id_and_user_id ON meta_d
 
 
 --
+-- Name: index_meta_key_definitions_on_description_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_meta_key_definitions_on_description_id ON meta_key_definitions USING btree (description_id);
+
+
+--
+-- Name: index_meta_key_definitions_on_hint_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_meta_key_definitions_on_hint_id ON meta_key_definitions USING btree (hint_id);
+
+
+--
+-- Name: index_meta_key_definitions_on_label_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_meta_key_definitions_on_label_id ON meta_key_definitions USING btree (label_id);
+
+
+--
 -- Name: index_meta_key_definitions_on_meta_context_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1186,6 +1195,13 @@ CREATE INDEX index_meta_key_definitions_on_meta_key_id ON meta_key_definitions U
 --
 
 CREATE INDEX index_meta_keys_meta_terms_on_meta_key_id ON meta_keys_meta_terms USING btree (meta_key_id);
+
+
+--
+-- Name: index_meta_keys_meta_terms_on_meta_term_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_meta_keys_meta_terms_on_meta_term_id ON meta_keys_meta_terms USING btree (meta_term_id);
 
 
 --
@@ -1433,7 +1449,7 @@ ALTER TABLE ONLY keywords
 --
 
 ALTER TABLE ONLY keywords
-    ADD CONSTRAINT keywords_meta_term_id_fk FOREIGN KEY (meta_term_id) REFERENCES meta_terms(id);
+    ADD CONSTRAINT keywords_meta_term_id_fk FOREIGN KEY (meta_term_id) REFERENCES meta_terms(id) ON DELETE CASCADE;
 
 
 --
@@ -1569,7 +1585,7 @@ ALTER TABLE ONLY meta_data_meta_terms
 --
 
 ALTER TABLE ONLY meta_data_meta_terms
-    ADD CONSTRAINT meta_data_meta_terms_meta_term_id_fk FOREIGN KEY (meta_term_id) REFERENCES meta_terms(id) ON DELETE CASCADE;
+    ADD CONSTRAINT meta_data_meta_terms_meta_term_id_fk FOREIGN KEY (meta_term_id) REFERENCES meta_terms(id);
 
 
 --
@@ -1797,6 +1813,8 @@ INSERT INTO schema_migrations (version) VALUES ('20131219142324');
 INSERT INTO schema_migrations (version) VALUES ('20131219153746');
 
 INSERT INTO schema_migrations (version) VALUES ('20131219162643');
+
+INSERT INTO schema_migrations (version) VALUES ('20131219163756');
 
 INSERT INTO schema_migrations (version) VALUES ('21');
 
