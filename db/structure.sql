@@ -314,8 +314,8 @@ CREATE TABLE meta_data_meta_terms (
 --
 
 CREATE TABLE meta_data_people (
-    person_id integer NOT NULL,
-    meta_datum_id uuid
+    meta_datum_id uuid,
+    person_id uuid
 );
 
 
@@ -390,7 +390,6 @@ CREATE TABLE meta_terms (
 --
 
 CREATE TABLE people (
-    id integer NOT NULL,
     is_group boolean DEFAULT false,
     date_of_birth date,
     date_of_death date,
@@ -398,27 +397,9 @@ CREATE TABLE people (
     last_name character varying(255),
     pseudonym character varying(255),
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    id uuid DEFAULT uuid_generate_v4() NOT NULL
 );
-
-
---
--- Name: people_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE people_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: people_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE people_id_seq OWNED BY people.id;
 
 
 --
@@ -515,7 +496,6 @@ CREATE TABLE userpermissions (
 
 CREATE TABLE users (
     id integer NOT NULL,
-    person_id integer NOT NULL,
     zhdkid integer,
     email character varying(100),
     login character varying(40),
@@ -523,7 +503,8 @@ CREATE TABLE users (
     usage_terms_accepted_at timestamp without time zone,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    password_digest character varying(255)
+    password_digest character varying(255),
+    person_id uuid
 );
 
 
@@ -575,13 +556,6 @@ CREATE TABLE zencoder_jobs (
     updated_at timestamp without time zone NOT NULL,
     media_file_id uuid
 );
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY people ALTER COLUMN id SET DEFAULT nextval('people_id_seq'::regclass);
 
 
 --
@@ -1142,6 +1116,13 @@ CREATE UNIQUE INDEX index_meta_data_people_on_meta_datum_id_and_person_id ON met
 
 
 --
+-- Name: index_meta_data_people_on_person_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_meta_data_people_on_person_id ON meta_data_people USING btree (person_id);
+
+
+--
 -- Name: index_meta_data_users_on_meta_datum_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1285,7 +1266,7 @@ CREATE UNIQUE INDEX index_users_on_login ON users USING btree (login);
 -- Name: index_users_on_person_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE UNIQUE INDEX index_users_on_person_id ON users USING btree (person_id);
+CREATE INDEX index_users_on_person_id ON users USING btree (person_id);
 
 
 --
@@ -1815,6 +1796,8 @@ INSERT INTO schema_migrations (version) VALUES ('20131219153746');
 INSERT INTO schema_migrations (version) VALUES ('20131219162643');
 
 INSERT INTO schema_migrations (version) VALUES ('20131219163756');
+
+INSERT INTO schema_migrations (version) VALUES ('20131219183038');
 
 INSERT INTO schema_migrations (version) VALUES ('21');
 
