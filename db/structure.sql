@@ -137,13 +137,13 @@ CREATE TABLE full_texts (
 --
 
 CREATE TABLE grouppermissions (
-    group_id integer NOT NULL,
     download boolean DEFAULT false NOT NULL,
     view boolean DEFAULT false NOT NULL,
     edit boolean DEFAULT false NOT NULL,
     manage boolean DEFAULT false NOT NULL,
     media_resource_id uuid,
     id uuid DEFAULT uuid_generate_v4() NOT NULL,
+    group_id uuid,
     CONSTRAINT manage_on_grouppermissions_is_false CHECK ((manage = false))
 );
 
@@ -153,31 +153,12 @@ CREATE TABLE grouppermissions (
 --
 
 CREATE TABLE groups (
-    id integer NOT NULL,
     name character varying(255),
     ldap_id character varying(255),
     ldap_name character varying(255),
-    type character varying(255) DEFAULT 'Group'::character varying NOT NULL
+    type character varying(255) DEFAULT 'Group'::character varying NOT NULL,
+    id uuid DEFAULT uuid_generate_v4() NOT NULL
 );
-
-
---
--- Name: groups_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE groups_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: groups_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE groups_id_seq OWNED BY groups.id;
 
 
 --
@@ -185,8 +166,8 @@ ALTER SEQUENCE groups_id_seq OWNED BY groups.id;
 --
 
 CREATE TABLE groups_users (
-    group_id integer NOT NULL,
-    user_id integer NOT NULL
+    user_id integer NOT NULL,
+    group_id uuid
 );
 
 
@@ -390,7 +371,7 @@ ALTER SEQUENCE meta_data_id_seq OWNED BY meta_data.id;
 
 CREATE TABLE meta_data_meta_departments (
     meta_datum_id integer NOT NULL,
-    meta_department_id integer NOT NULL
+    meta_department_id uuid
 );
 
 
@@ -708,13 +689,6 @@ CREATE TABLE zencoder_jobs (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
 );
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY groups ALTER COLUMN id SET DEFAULT nextval('groups_id_seq'::regclass);
 
 
 --
@@ -1079,17 +1053,10 @@ CREATE INDEX index_groups_on_type ON groups USING btree (type);
 
 
 --
--- Name: index_groups_users_on_group_id_and_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_groups_users_on_group_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE INDEX index_groups_users_on_group_id_and_user_id ON groups_users USING btree (group_id, user_id);
-
-
---
--- Name: index_groups_users_on_user_id_and_group_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE UNIQUE INDEX index_groups_users_on_user_id_and_group_id ON groups_users USING btree (user_id, group_id);
+CREATE INDEX index_groups_users_on_group_id ON groups_users USING btree (group_id);
 
 
 --
@@ -1240,10 +1207,10 @@ CREATE INDEX index_meta_contexts_on_position ON meta_contexts USING btree ("posi
 
 
 --
--- Name: index_meta_data_meta_departments; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_meta_data_meta_departments_on_meta_department_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE UNIQUE INDEX index_meta_data_meta_departments ON meta_data_meta_departments USING btree (meta_datum_id, meta_department_id);
+CREATE INDEX index_meta_data_meta_departments_on_meta_department_id ON meta_data_meta_departments USING btree (meta_department_id);
 
 
 --
@@ -1922,6 +1889,8 @@ INSERT INTO schema_migrations (version) VALUES ('20131219091126');
 INSERT INTO schema_migrations (version) VALUES ('20131219093649');
 
 INSERT INTO schema_migrations (version) VALUES ('20131219100651');
+
+INSERT INTO schema_migrations (version) VALUES ('20131219103529');
 
 INSERT INTO schema_migrations (version) VALUES ('21');
 
