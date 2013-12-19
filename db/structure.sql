@@ -189,7 +189,6 @@ CREATE TABLE keywords (
 --
 
 CREATE TABLE media_files (
-    id integer NOT NULL,
     height integer,
     size bigint,
     width integer,
@@ -202,27 +201,9 @@ CREATE TABLE media_files (
     updated_at timestamp without time zone NOT NULL,
     extension character varying(255),
     media_type character varying(255),
-    media_entry_id uuid
+    media_entry_id uuid,
+    id uuid DEFAULT uuid_generate_v4() NOT NULL
 );
-
-
---
--- Name: media_files_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE media_files_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: media_files_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE media_files_id_seq OWNED BY media_files.id;
 
 
 --
@@ -554,7 +535,6 @@ CREATE TABLE permission_presets (
 --
 
 CREATE TABLE previews (
-    media_file_id integer NOT NULL,
     height integer,
     width integer,
     content_type character varying(255),
@@ -562,7 +542,8 @@ CREATE TABLE previews (
     thumbnail character varying(255),
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    id uuid DEFAULT uuid_generate_v4() NOT NULL
+    id uuid DEFAULT uuid_generate_v4() NOT NULL,
+    media_file_id uuid
 );
 
 
@@ -678,7 +659,6 @@ CREATE TABLE visualizations (
 
 CREATE TABLE zencoder_jobs (
     id uuid NOT NULL,
-    media_file_id integer NOT NULL,
     zencoder_id integer,
     comment text,
     state character varying(255) DEFAULT 'initialized'::character varying NOT NULL,
@@ -687,15 +667,9 @@ CREATE TABLE zencoder_jobs (
     request text,
     response text,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    media_file_id uuid
 );
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY media_files ALTER COLUMN id SET DEFAULT nextval('media_files_id_seq'::regclass);
 
 
 --
@@ -1749,14 +1723,6 @@ ALTER TABLE ONLY meta_keys_meta_terms
 
 
 --
--- Name: previews_media_file_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY previews
-    ADD CONSTRAINT previews_media_file_id_fk FOREIGN KEY (media_file_id) REFERENCES media_files(id) ON DELETE CASCADE;
-
-
---
 -- Name: userpermissions_media_resource_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1778,14 +1744,6 @@ ALTER TABLE ONLY userpermissions
 
 ALTER TABLE ONLY users
     ADD CONSTRAINT users_person_id_fk FOREIGN KEY (person_id) REFERENCES people(id);
-
-
---
--- Name: zencoder_jobs_media_file_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY zencoder_jobs
-    ADD CONSTRAINT zencoder_jobs_media_file_id_fk FOREIGN KEY (media_file_id) REFERENCES media_files(id);
 
 
 --
@@ -1891,6 +1849,8 @@ INSERT INTO schema_migrations (version) VALUES ('20131219093649');
 INSERT INTO schema_migrations (version) VALUES ('20131219100651');
 
 INSERT INTO schema_migrations (version) VALUES ('20131219103529');
+
+INSERT INTO schema_migrations (version) VALUES ('20131219134429');
 
 INSERT INTO schema_migrations (version) VALUES ('21');
 
