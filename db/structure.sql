@@ -211,31 +211,12 @@ CREATE TABLE media_files (
 --
 
 CREATE TABLE media_resource_arcs (
-    id integer NOT NULL,
     highlight boolean DEFAULT false,
     cover boolean,
     parent_id uuid,
-    child_id uuid
+    child_id uuid,
+    id uuid DEFAULT uuid_generate_v4() NOT NULL
 );
-
-
---
--- Name: media_resource_arcs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE media_resource_arcs_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: media_resource_arcs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE media_resource_arcs_id_seq OWNED BY media_resource_arcs.id;
 
 
 --
@@ -670,13 +651,6 @@ CREATE TABLE zencoder_jobs (
     updated_at timestamp without time zone NOT NULL,
     media_file_id uuid
 );
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY media_resource_arcs ALTER COLUMN id SET DEFAULT nextval('media_resource_arcs_id_seq'::regclass);
 
 
 --
@@ -1851,6 +1825,8 @@ INSERT INTO schema_migrations (version) VALUES ('20131219100651');
 INSERT INTO schema_migrations (version) VALUES ('20131219103529');
 
 INSERT INTO schema_migrations (version) VALUES ('20131219134429');
+
+INSERT INTO schema_migrations (version) VALUES ('20131219141740');
 
 INSERT INTO schema_migrations (version) VALUES ('21');
 
