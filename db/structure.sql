@@ -137,34 +137,15 @@ CREATE TABLE full_texts (
 --
 
 CREATE TABLE grouppermissions (
-    id integer NOT NULL,
     group_id integer NOT NULL,
     download boolean DEFAULT false NOT NULL,
     view boolean DEFAULT false NOT NULL,
     edit boolean DEFAULT false NOT NULL,
     manage boolean DEFAULT false NOT NULL,
     media_resource_id uuid,
+    id uuid DEFAULT uuid_generate_v4() NOT NULL,
     CONSTRAINT manage_on_grouppermissions_is_false CHECK ((manage = false))
 );
-
-
---
--- Name: grouppermissions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE grouppermissions_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: grouppermissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE grouppermissions_id_seq OWNED BY grouppermissions.id;
 
 
 --
@@ -214,31 +195,12 @@ CREATE TABLE groups_users (
 --
 
 CREATE TABLE keywords (
-    id integer NOT NULL,
     meta_term_id integer NOT NULL,
     user_id integer,
     meta_datum_id integer NOT NULL,
-    created_at timestamp without time zone
+    created_at timestamp without time zone,
+    id uuid DEFAULT uuid_generate_v4() NOT NULL
 );
-
-
---
--- Name: keywords_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE keywords_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: keywords_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE keywords_id_seq OWNED BY keywords.id;
 
 
 --
@@ -467,7 +429,6 @@ CREATE TABLE meta_data_users (
 --
 
 CREATE TABLE meta_key_definitions (
-    id integer NOT NULL,
     description_id integer,
     hint_id integer,
     label_id integer,
@@ -480,27 +441,9 @@ CREATE TABLE meta_key_definitions (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     meta_key_id character varying(255),
-    meta_context_name character varying(255)
+    meta_context_name character varying(255),
+    id uuid DEFAULT uuid_generate_v4() NOT NULL
 );
-
-
---
--- Name: meta_key_definitions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE meta_key_definitions_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: meta_key_definitions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE meta_key_definitions_id_seq OWNED BY meta_key_definitions.id;
 
 
 --
@@ -616,32 +559,13 @@ ALTER SEQUENCE people_id_seq OWNED BY people.id;
 --
 
 CREATE TABLE permission_presets (
-    id integer NOT NULL,
     name character varying(255),
     download boolean DEFAULT false NOT NULL,
     view boolean DEFAULT false NOT NULL,
     edit boolean DEFAULT false NOT NULL,
-    manage boolean DEFAULT false NOT NULL
+    manage boolean DEFAULT false NOT NULL,
+    id uuid DEFAULT uuid_generate_v4() NOT NULL
 );
-
-
---
--- Name: permission_presets_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE permission_presets_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: permission_presets_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE permission_presets_id_seq OWNED BY permission_presets.id;
 
 
 --
@@ -649,7 +573,6 @@ ALTER SEQUENCE permission_presets_id_seq OWNED BY permission_presets.id;
 --
 
 CREATE TABLE previews (
-    id integer NOT NULL,
     media_file_id integer NOT NULL,
     height integer,
     width integer,
@@ -657,27 +580,9 @@ CREATE TABLE previews (
     filename character varying(255),
     thumbnail character varying(255),
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    id uuid DEFAULT uuid_generate_v4() NOT NULL
 );
-
-
---
--- Name: previews_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE previews_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: previews_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE previews_id_seq OWNED BY previews.id;
 
 
 --
@@ -727,33 +632,14 @@ ALTER SEQUENCE usage_terms_id_seq OWNED BY usage_terms.id;
 --
 
 CREATE TABLE userpermissions (
-    id integer NOT NULL,
     user_id integer NOT NULL,
     download boolean DEFAULT false NOT NULL,
     view boolean DEFAULT false NOT NULL,
     edit boolean DEFAULT false NOT NULL,
     manage boolean DEFAULT false NOT NULL,
-    media_resource_id uuid
+    media_resource_id uuid,
+    id uuid DEFAULT uuid_generate_v4() NOT NULL
 );
-
-
---
--- Name: userpermissions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE userpermissions_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: userpermissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE userpermissions_id_seq OWNED BY userpermissions.id;
 
 
 --
@@ -828,21 +714,7 @@ CREATE TABLE zencoder_jobs (
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY grouppermissions ALTER COLUMN id SET DEFAULT nextval('grouppermissions_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
 ALTER TABLE ONLY groups ALTER COLUMN id SET DEFAULT nextval('groups_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY keywords ALTER COLUMN id SET DEFAULT nextval('keywords_id_seq'::regclass);
 
 
 --
@@ -877,13 +749,6 @@ ALTER TABLE ONLY meta_data ALTER COLUMN id SET DEFAULT nextval('meta_data_id_seq
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY meta_key_definitions ALTER COLUMN id SET DEFAULT nextval('meta_key_definitions_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
 ALTER TABLE ONLY meta_keys_meta_terms ALTER COLUMN id SET DEFAULT nextval('meta_keys_meta_terms_id_seq'::regclass);
 
 
@@ -905,28 +770,7 @@ ALTER TABLE ONLY people ALTER COLUMN id SET DEFAULT nextval('people_id_seq'::reg
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY permission_presets ALTER COLUMN id SET DEFAULT nextval('permission_presets_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY previews ALTER COLUMN id SET DEFAULT nextval('previews_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
 ALTER TABLE ONLY usage_terms ALTER COLUMN id SET DEFAULT nextval('usage_terms_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY userpermissions ALTER COLUMN id SET DEFAULT nextval('userpermissions_id_seq'::regclass);
 
 
 --
@@ -2076,6 +1920,8 @@ INSERT INTO schema_migrations (version) VALUES ('20131219083359');
 INSERT INTO schema_migrations (version) VALUES ('20131219091126');
 
 INSERT INTO schema_migrations (version) VALUES ('20131219093649');
+
+INSERT INTO schema_migrations (version) VALUES ('20131219100651');
 
 INSERT INTO schema_migrations (version) VALUES ('21');
 
