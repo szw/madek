@@ -178,9 +178,9 @@ CREATE TABLE groups_users (
 CREATE TABLE keywords (
     meta_term_id integer NOT NULL,
     user_id integer,
-    meta_datum_id integer NOT NULL,
     created_at timestamp without time zone,
-    id uuid DEFAULT uuid_generate_v4() NOT NULL
+    id uuid DEFAULT uuid_generate_v4() NOT NULL,
+    meta_datum_id uuid
 );
 
 
@@ -280,32 +280,13 @@ CREATE TABLE meta_contexts (
 --
 
 CREATE TABLE meta_data (
-    id integer NOT NULL,
     type character varying(255),
     string text,
     meta_key_id character varying(255),
     media_resource_id uuid,
-    copyright_id uuid
+    copyright_id uuid,
+    id uuid DEFAULT uuid_generate_v4() NOT NULL
 );
-
-
---
--- Name: meta_data_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE meta_data_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: meta_data_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE meta_data_id_seq OWNED BY meta_data.id;
 
 
 --
@@ -313,8 +294,8 @@ ALTER SEQUENCE meta_data_id_seq OWNED BY meta_data.id;
 --
 
 CREATE TABLE meta_data_meta_departments (
-    meta_datum_id integer NOT NULL,
-    meta_department_id uuid
+    meta_department_id uuid,
+    meta_datum_id uuid
 );
 
 
@@ -323,8 +304,8 @@ CREATE TABLE meta_data_meta_departments (
 --
 
 CREATE TABLE meta_data_meta_terms (
-    meta_datum_id integer NOT NULL,
-    meta_term_id integer NOT NULL
+    meta_term_id integer NOT NULL,
+    meta_datum_id uuid
 );
 
 
@@ -333,8 +314,8 @@ CREATE TABLE meta_data_meta_terms (
 --
 
 CREATE TABLE meta_data_people (
-    meta_datum_id integer NOT NULL,
-    person_id integer NOT NULL
+    person_id integer NOT NULL,
+    meta_datum_id uuid
 );
 
 
@@ -343,8 +324,8 @@ CREATE TABLE meta_data_people (
 --
 
 CREATE TABLE meta_data_users (
-    meta_datum_id integer NOT NULL,
-    user_id integer NOT NULL
+    user_id integer NOT NULL,
+    meta_datum_id uuid
 );
 
 
@@ -632,13 +613,6 @@ CREATE TABLE zencoder_jobs (
     updated_at timestamp without time zone NOT NULL,
     media_file_id uuid
 );
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY meta_data ALTER COLUMN id SET DEFAULT nextval('meta_data_id_seq'::regclass);
 
 
 --
@@ -1136,10 +1110,31 @@ CREATE INDEX index_meta_contexts_on_position ON meta_contexts USING btree ("posi
 
 
 --
+-- Name: index_meta_data_meta_dep_on_meta_datum_id_and_meta_dep_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_meta_data_meta_dep_on_meta_datum_id_and_meta_dep_id ON meta_data_meta_departments USING btree (meta_datum_id, meta_department_id);
+
+
+--
+-- Name: index_meta_data_meta_departments_on_meta_datum_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_meta_data_meta_departments_on_meta_datum_id ON meta_data_meta_departments USING btree (meta_datum_id);
+
+
+--
 -- Name: index_meta_data_meta_departments_on_meta_department_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
 CREATE INDEX index_meta_data_meta_departments_on_meta_department_id ON meta_data_meta_departments USING btree (meta_department_id);
+
+
+--
+-- Name: index_meta_data_meta_terms_on_meta_datum_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_meta_data_meta_terms_on_meta_datum_id ON meta_data_meta_terms USING btree (meta_datum_id);
 
 
 --
@@ -1171,10 +1166,24 @@ CREATE INDEX index_meta_data_on_meta_key_id ON meta_data USING btree (meta_key_i
 
 
 --
+-- Name: index_meta_data_people_on_meta_datum_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_meta_data_people_on_meta_datum_id ON meta_data_people USING btree (meta_datum_id);
+
+
+--
 -- Name: index_meta_data_people_on_meta_datum_id_and_person_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
 CREATE UNIQUE INDEX index_meta_data_people_on_meta_datum_id_and_person_id ON meta_data_people USING btree (meta_datum_id, person_id);
+
+
+--
+-- Name: index_meta_data_users_on_meta_datum_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_meta_data_users_on_meta_datum_id ON meta_data_users USING btree (meta_datum_id);
 
 
 --
@@ -1810,6 +1819,8 @@ INSERT INTO schema_migrations (version) VALUES ('20131219134429');
 INSERT INTO schema_migrations (version) VALUES ('20131219141740');
 
 INSERT INTO schema_migrations (version) VALUES ('20131219142324');
+
+INSERT INTO schema_migrations (version) VALUES ('20131219153746');
 
 INSERT INTO schema_migrations (version) VALUES ('21');
 
