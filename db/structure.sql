@@ -367,30 +367,11 @@ CREATE TABLE meta_keys (
 --
 
 CREATE TABLE meta_keys_meta_terms (
-    id integer NOT NULL,
     meta_term_id integer NOT NULL,
     "position" integer DEFAULT 0 NOT NULL,
-    meta_key_id character varying(255)
+    meta_key_id character varying(255),
+    id uuid DEFAULT uuid_generate_v4() NOT NULL
 );
-
-
---
--- Name: meta_keys_meta_terms_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE meta_keys_meta_terms_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: meta_keys_meta_terms_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE meta_keys_meta_terms_id_seq OWNED BY meta_keys_meta_terms.id;
 
 
 --
@@ -613,13 +594,6 @@ CREATE TABLE zencoder_jobs (
     updated_at timestamp without time zone NOT NULL,
     media_file_id uuid
 );
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY meta_keys_meta_terms ALTER COLUMN id SET DEFAULT nextval('meta_keys_meta_terms_id_seq'::regclass);
 
 
 --
@@ -1821,6 +1795,8 @@ INSERT INTO schema_migrations (version) VALUES ('20131219141740');
 INSERT INTO schema_migrations (version) VALUES ('20131219142324');
 
 INSERT INTO schema_migrations (version) VALUES ('20131219153746');
+
+INSERT INTO schema_migrations (version) VALUES ('20131219162643');
 
 INSERT INTO schema_migrations (version) VALUES ('21');
 
