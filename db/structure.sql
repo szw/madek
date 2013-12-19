@@ -104,31 +104,12 @@ CREATE TABLE copyrights (
 --
 
 CREATE TABLE edit_sessions (
-    id integer NOT NULL,
     user_id integer NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    media_resource_id uuid
+    media_resource_id uuid,
+    id uuid DEFAULT uuid_generate_v4() NOT NULL
 );
-
-
---
--- Name: edit_sessions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE edit_sessions_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: edit_sessions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE edit_sessions_id_seq OWNED BY edit_sessions.id;
 
 
 --
@@ -861,13 +842,6 @@ CREATE TABLE zencoder_jobs (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
 );
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY edit_sessions ALTER COLUMN id SET DEFAULT nextval('edit_sessions_id_seq'::regclass);
 
 
 --
@@ -2125,6 +2099,8 @@ INSERT INTO schema_migrations (version) VALUES ('20131105100927');
 INSERT INTO schema_migrations (version) VALUES ('20131213124951');
 
 INSERT INTO schema_migrations (version) VALUES ('20131219083359');
+
+INSERT INTO schema_migrations (version) VALUES ('20131219091126');
 
 INSERT INTO schema_migrations (version) VALUES ('21');
 
