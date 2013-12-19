@@ -127,29 +127,9 @@ CREATE TABLE favorites (
 --
 
 CREATE TABLE full_texts (
-    id integer NOT NULL,
     text text,
-    media_resource_id uuid
+    media_resource_id uuid NOT NULL
 );
-
-
---
--- Name: full_texts_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE full_texts_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: full_texts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE full_texts_id_seq OWNED BY full_texts.id;
 
 
 --
@@ -848,13 +828,6 @@ CREATE TABLE zencoder_jobs (
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY full_texts ALTER COLUMN id SET DEFAULT nextval('full_texts_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
 ALTER TABLE ONLY grouppermissions ALTER COLUMN id SET DEFAULT nextval('grouppermissions_id_seq'::regclass);
 
 
@@ -992,7 +965,7 @@ ALTER TABLE ONLY edit_sessions
 --
 
 ALTER TABLE ONLY full_texts
-    ADD CONSTRAINT full_texts_pkey PRIMARY KEY (id);
+    ADD CONSTRAINT full_texts_pkey PRIMARY KEY (media_resource_id);
 
 
 --
@@ -2101,6 +2074,8 @@ INSERT INTO schema_migrations (version) VALUES ('20131213124951');
 INSERT INTO schema_migrations (version) VALUES ('20131219083359');
 
 INSERT INTO schema_migrations (version) VALUES ('20131219091126');
+
+INSERT INTO schema_migrations (version) VALUES ('20131219093649');
 
 INSERT INTO schema_migrations (version) VALUES ('21');
 
