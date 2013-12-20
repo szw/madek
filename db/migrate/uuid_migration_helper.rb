@@ -9,8 +9,10 @@ module UuidMigrationHelper
     execute %[ALTER TABLE #{table_name} ADD PRIMARY KEY (id)]
   end
 
-  def migrate_foreign_key foreign_key_table_name, referenced_table_name, nullable = false
+  def migrate_foreign_key foreign_key_table_name, referenced_table_name, \
+    nullable = false, \
     column_name= "#{referenced_table_name.singularize}_id"
+
     tmp_column= "#{column_name}_tmp"
     foreign_key_column= "#{referenced_table_name}.uuid"
 
@@ -18,7 +20,7 @@ module UuidMigrationHelper
     execute %[ UPDATE #{foreign_key_table_name}
                 SET #{tmp_column} = #{foreign_key_column}
                 FROM #{referenced_table_name}
-                WHERE #{referenced_table_name}.id = #{foreign_key_table_name}.#{referenced_table_name.singularize}_id ] 
+                WHERE #{referenced_table_name}.id = #{foreign_key_table_name}.#{column_name} ] 
     remove_column foreign_key_table_name, column_name
     rename_column foreign_key_table_name, tmp_column, column_name
     add_index foreign_key_table_name, column_name
