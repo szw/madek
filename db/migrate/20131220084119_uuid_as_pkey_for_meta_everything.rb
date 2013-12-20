@@ -6,6 +6,40 @@ class UuidAsPkeyForMetaEverything < ActiveRecord::Migration
 
   def up
 
+
+    #
+    # meta_keys_meta_terms
+    #
+     
+    prepare_table 'meta_keys_meta_terms'
+    migrate_table 'meta_keys_meta_terms'
+
+    #
+    # meta_data
+    #
+
+    prepare_table 'meta_data'
+
+    migrate_foreign_key 'meta_data_meta_terms', 'meta_data'
+    migrate_foreign_key 'keywords', 'meta_data'
+    migrate_foreign_key 'meta_data_people', 'meta_data'
+    migrate_foreign_key 'meta_data_users', 'meta_data'
+    migrate_foreign_key 'meta_data_meta_departments', 'meta_data'
+
+    migrate_table 'meta_data'
+
+    add_foreign_key 'meta_data_meta_terms', 'meta_data', dependent: 'delete'
+    add_foreign_key 'keywords', 'meta_data', dependent: 'delete'
+    add_foreign_key 'meta_data_people', 'meta_data', dependent: 'delete'
+    add_foreign_key 'meta_data_users', 'meta_data', dependent: 'delete'
+    add_foreign_key 'meta_data_meta_departments', 'meta_data', dependent: 'delete'
+
+    add_index :meta_data_meta_terms, [:meta_datum_id, :meta_term_id], unique: true
+    add_index :meta_data_people, [:meta_datum_id, :person_id], unique: true
+    add_index :meta_data_users, [:meta_datum_id, :user_id], unique: true
+    add_index :meta_data_meta_departments, [:meta_datum_id, :meta_department_id], \
+      unique: true, name: 'index_meta_data_meta_dep_on_meta_datum_id_and_meta_dep_id'
+
     #
     # meta_terms
     #
@@ -31,6 +65,8 @@ class UuidAsPkeyForMetaEverything < ActiveRecord::Migration
     add_foreign_key 'meta_key_definitions', 'meta_terms', column: 'hint_id', options: 'ON DELETE SET NULL'
     add_foreign_key 'meta_key_definitions', 'meta_terms', column: 'label_id', options: 'ON DELETE SET NULL' 
     add_foreign_key 'meta_keys_meta_terms', 'meta_terms'
+
+
 
     raise 'NOT YET' 
   end
