@@ -4,8 +4,12 @@ Then /^there is "(.*?)" in my imports$/ do |file_name|
   expect(find("#mei_filelist li", text: file_name)).to be
 end
 
-Then (/^There is a element with the data\-context\-name "(.*?)" in the ui\-resource\-body$/) do |name|
+Then (/^There is an element with the data\-context\-name "(.*?)" in the ui\-resource\-body$/) do |name|
   expect(find(".ui-resource-body *[data-context-name='#{name}']")).to be
+end
+
+Then(/^There is not an element with the data\-context\-name "(.*?)" in the ui\-resource\-body$/) do |name|
+  expect(all(".ui-resource-body *[data-context-name='#{name}']").size).to be== 0
 end
 
 Then /^There is a link to content assigned to me$/ do

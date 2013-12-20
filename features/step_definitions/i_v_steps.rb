@@ -11,6 +11,10 @@ Then /^I visit the "(.*?)" path$/ do |path|
   visit path
 end
 
+When(/^I visit my first media_set$/) do
+  visit media_set_path(@me.media_sets.reorder(:created_at).first)
+end
+
 Then /^I visit the page of the last added media_entry$/ do
   visit media_entry_path MediaEntry.order(:created_at).last
 end
