@@ -42,7 +42,7 @@ end
 
 Then (/^There is a movie with previews and public viewing\-permission$/) do
   System.execute_cmd! "tar xf #{Rails.root.join "features/data/media_files_with_movie.tar.gz"} -C #{Rails.root.join  "db/media_files/", Rails.env}"
-  @movie = MediaResource.find "380e75e4-5c1d-4f30-b76e-71d5450f9922" 
+  @movie = MediaFile.find_by(guid: "66b1ef50186645438c047179f54ec6e6").media_entry
 end
 
 Then /^There is no link with class "(.*?)" in the list with class "(.*?)"$/ do |link_class, list_class|
