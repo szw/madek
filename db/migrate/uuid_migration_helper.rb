@@ -1,5 +1,4 @@
-class UuidForPeople < ActiveRecord::Migration
-
+module UuidMigrationHelper
   def prepare_table table_name 
     add_column table_name, :uuid, :uuid, null: false, default: 'uuid_generate_v4()'
   end
@@ -10,7 +9,7 @@ class UuidForPeople < ActiveRecord::Migration
     execute %[ALTER TABLE #{table_name} ADD PRIMARY KEY (id)]
   end
 
-  def migrate_foreign_key foreign_key_table_name, referenced_table_name
+  def migrate_foreign_key foreign_key_table_name, referenced_table_name, nullable = false
     column_name= "#{referenced_table_name.singularize}_id"
     tmp_column= "#{column_name}_tmp"
     foreign_key_column= "#{referenced_table_name}.uuid"
@@ -23,22 +22,6 @@ class UuidForPeople < ActiveRecord::Migration
     remove_column foreign_key_table_name, column_name
     rename_column foreign_key_table_name, tmp_column, column_name
     add_index foreign_key_table_name, column_name
-    change_column foreign_key_table_name, column_name, :uuid, null: :false
-  end
-
-
-  def up
-
-    prepare_table 'people'
-
-    migrate_foreign_key 'users', 'people'
-    migrate_foreign_key 'meta_data_people', 'people'
-    add_index 'meta_data_people', [:meta_datum_id,:person_id], unique: true
-
-    migrate_table 'people'
-
-    add_foreign_key 'users','people'
-    add_foreign_key 'meta_data_people', 'people'
-
+    change_column foreign_key_table_name, column_name, :uuid, null: nullable
   end
 end

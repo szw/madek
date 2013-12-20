@@ -104,11 +104,11 @@ CREATE TABLE copyrights (
 --
 
 CREATE TABLE edit_sessions (
-    user_id integer NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     media_resource_id uuid,
-    id uuid DEFAULT uuid_generate_v4() NOT NULL
+    id uuid DEFAULT uuid_generate_v4() NOT NULL,
+    user_id uuid NOT NULL
 );
 
 
@@ -117,8 +117,8 @@ CREATE TABLE edit_sessions (
 --
 
 CREATE TABLE favorites (
-    user_id integer NOT NULL,
-    media_resource_id uuid
+    media_resource_id uuid,
+    user_id uuid NOT NULL
 );
 
 
@@ -166,8 +166,8 @@ CREATE TABLE groups (
 --
 
 CREATE TABLE groups_users (
-    user_id integer NOT NULL,
-    group_id uuid
+    group_id uuid,
+    user_id uuid NOT NULL
 );
 
 
@@ -176,11 +176,11 @@ CREATE TABLE groups_users (
 --
 
 CREATE TABLE keywords (
-    user_id integer,
     created_at timestamp without time zone,
     id uuid DEFAULT uuid_generate_v4() NOT NULL,
     meta_datum_id uuid,
-    meta_term_id uuid
+    meta_term_id uuid,
+    user_id uuid
 );
 
 
@@ -229,12 +229,12 @@ CREATE TABLE media_resources (
     edit boolean DEFAULT false NOT NULL,
     manage boolean DEFAULT false NOT NULL,
     view boolean DEFAULT false NOT NULL,
-    user_id integer NOT NULL,
     settings text,
     type character varying(255),
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     id uuid DEFAULT uuid_generate_v4() NOT NULL,
+    user_id uuid NOT NULL,
     CONSTRAINT edit_on_publicpermissions_is_false CHECK ((edit = false)),
     CONSTRAINT manage_on_publicpermissions_is_false CHECK ((manage = false))
 );
@@ -315,7 +315,7 @@ CREATE TABLE meta_data_meta_terms (
 
 CREATE TABLE meta_data_people (
     meta_datum_id uuid,
-    person_id uuid
+    person_id uuid NOT NULL
 );
 
 
@@ -324,8 +324,8 @@ CREATE TABLE meta_data_people (
 --
 
 CREATE TABLE meta_data_users (
-    user_id integer NOT NULL,
-    meta_datum_id uuid
+    meta_datum_id uuid,
+    user_id uuid NOT NULL
 );
 
 
@@ -480,13 +480,13 @@ ALTER SEQUENCE usage_terms_id_seq OWNED BY usage_terms.id;
 --
 
 CREATE TABLE userpermissions (
-    user_id integer NOT NULL,
     download boolean DEFAULT false NOT NULL,
     view boolean DEFAULT false NOT NULL,
     edit boolean DEFAULT false NOT NULL,
     manage boolean DEFAULT false NOT NULL,
     media_resource_id uuid,
-    id uuid DEFAULT uuid_generate_v4() NOT NULL
+    id uuid DEFAULT uuid_generate_v4() NOT NULL,
+    user_id uuid NOT NULL
 );
 
 
@@ -495,7 +495,6 @@ CREATE TABLE userpermissions (
 --
 
 CREATE TABLE users (
-    id integer NOT NULL,
     zhdkid integer,
     email character varying(100),
     login character varying(40),
@@ -504,27 +503,9 @@ CREATE TABLE users (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     password_digest character varying(255),
-    person_id uuid
+    id uuid DEFAULT uuid_generate_v4() NOT NULL,
+    person_id uuid NOT NULL
 );
-
-
---
--- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE users_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE users_id_seq OWNED BY users.id;
 
 
 --
@@ -532,10 +513,10 @@ ALTER SEQUENCE users_id_seq OWNED BY users.id;
 --
 
 CREATE TABLE visualizations (
-    user_id integer NOT NULL,
     resource_identifier character varying(255) NOT NULL,
     control_settings text,
-    layout text
+    layout text,
+    user_id uuid NOT NULL
 );
 
 
@@ -563,13 +544,6 @@ CREATE TABLE zencoder_jobs (
 --
 
 ALTER TABLE ONLY usage_terms ALTER COLUMN id SET DEFAULT nextval('usage_terms_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
 
 
 --
@@ -757,14 +731,6 @@ ALTER TABLE ONLY users
 
 
 --
--- Name: visualizations_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY visualizations
-    ADD CONSTRAINT visualizations_pkey PRIMARY KEY (user_id, resource_identifier);
-
-
---
 -- Name: zencoder_jobs_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -829,6 +795,13 @@ CREATE INDEX index_favorites_on_media_resource_id ON favorites USING btree (medi
 
 
 --
+-- Name: index_favorites_on_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_favorites_on_user_id ON favorites USING btree (user_id);
+
+
+--
 -- Name: index_full_texts_on_media_resource_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -875,6 +848,13 @@ CREATE INDEX index_groups_on_type ON groups USING btree (type);
 --
 
 CREATE INDEX index_groups_users_on_group_id ON groups_users USING btree (group_id);
+
+
+--
+-- Name: index_groups_users_on_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_groups_users_on_user_id ON groups_users USING btree (user_id);
 
 
 --
@@ -1130,10 +1110,10 @@ CREATE INDEX index_meta_data_users_on_meta_datum_id ON meta_data_users USING btr
 
 
 --
--- Name: index_meta_data_users_on_meta_datum_id_and_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_meta_data_users_on_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE UNIQUE INDEX index_meta_data_users_on_meta_datum_id_and_user_id ON meta_data_users USING btree (meta_datum_id, user_id);
+CREATE INDEX index_meta_data_users_on_user_id ON meta_data_users USING btree (user_id);
 
 
 --
@@ -1277,6 +1257,20 @@ CREATE UNIQUE INDEX index_users_on_zhdkid ON users USING btree (zhdkid);
 
 
 --
+-- Name: index_visualizations_on_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_visualizations_on_user_id ON visualizations USING btree (user_id);
+
+
+--
+-- Name: index_visualizations_on_user_id_and_resource_identifier; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_visualizations_on_user_id_and_resource_identifier ON visualizations USING btree (user_id, resource_identifier);
+
+
+--
 -- Name: index_zencoder_jobs_on_created_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1358,7 +1352,7 @@ ALTER TABLE ONLY edit_sessions
 --
 
 ALTER TABLE ONLY edit_sessions
-    ADD CONSTRAINT edit_sessions_user_id_fk FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+    ADD CONSTRAINT edit_sessions_user_id_fk FOREIGN KEY (user_id) REFERENCES users(id);
 
 
 --
@@ -1374,7 +1368,7 @@ ALTER TABLE ONLY favorites
 --
 
 ALTER TABLE ONLY favorites
-    ADD CONSTRAINT favorites_user_id_fk FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+    ADD CONSTRAINT favorites_user_id_fk FOREIGN KEY (user_id) REFERENCES users(id);
 
 
 --
@@ -1414,7 +1408,7 @@ ALTER TABLE ONLY groups_users
 --
 
 ALTER TABLE ONLY groups_users
-    ADD CONSTRAINT groups_users_user_id_fk FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+    ADD CONSTRAINT groups_users_user_id_fk FOREIGN KEY (user_id) REFERENCES users(id);
 
 
 --
@@ -1598,7 +1592,7 @@ ALTER TABLE ONLY meta_data_users
 --
 
 ALTER TABLE ONLY meta_data_users
-    ADD CONSTRAINT meta_data_users_user_id_fk FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+    ADD CONSTRAINT meta_data_users_user_id_fk FOREIGN KEY (user_id) REFERENCES users(id);
 
 
 --
@@ -1658,6 +1652,14 @@ ALTER TABLE ONLY meta_keys_meta_terms
 
 
 --
+-- Name: previews_media_file_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY previews
+    ADD CONSTRAINT previews_media_file_id_fk FOREIGN KEY (media_file_id) REFERENCES media_files(id);
+
+
+--
 -- Name: userpermissions_media_resource_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1670,7 +1672,7 @@ ALTER TABLE ONLY userpermissions
 --
 
 ALTER TABLE ONLY userpermissions
-    ADD CONSTRAINT userpermissions_user_id_fk FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+    ADD CONSTRAINT userpermissions_user_id_fk FOREIGN KEY (user_id) REFERENCES users(id);
 
 
 --
@@ -1679,6 +1681,22 @@ ALTER TABLE ONLY userpermissions
 
 ALTER TABLE ONLY users
     ADD CONSTRAINT users_person_id_fk FOREIGN KEY (person_id) REFERENCES people(id);
+
+
+--
+-- Name: visualizations_user_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY visualizations
+    ADD CONSTRAINT visualizations_user_id_fk FOREIGN KEY (user_id) REFERENCES users(id);
+
+
+--
+-- Name: zencoder_jobs_media_file_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY zencoder_jobs
+    ADD CONSTRAINT zencoder_jobs_media_file_id_fk FOREIGN KEY (media_file_id) REFERENCES media_files(id) ON DELETE CASCADE;
 
 
 --
@@ -1797,7 +1815,7 @@ INSERT INTO schema_migrations (version) VALUES ('20131219162643');
 
 INSERT INTO schema_migrations (version) VALUES ('20131219163756');
 
-INSERT INTO schema_migrations (version) VALUES ('20131219183038');
+INSERT INTO schema_migrations (version) VALUES ('20131220080516');
 
 INSERT INTO schema_migrations (version) VALUES ('21');
 
