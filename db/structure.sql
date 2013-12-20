@@ -77,9 +77,9 @@ CREATE TABLE app_settings (
     footer_links text,
     second_displayed_meta_context_name character varying(255),
     third_displayed_meta_context_name character varying(255),
-    splashscreen_slideshow_set_id uuid,
     catalog_set_id uuid,
     featured_set_id uuid,
+    splashscreen_slideshow_set_id uuid,
     CONSTRAINT oneandonly CHECK ((id = 0))
 );
 
@@ -106,7 +106,7 @@ CREATE TABLE copyrights (
 CREATE TABLE edit_sessions (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    media_resource_id uuid,
+    media_resource_id uuid NOT NULL,
     user_id uuid NOT NULL,
     id uuid DEFAULT uuid_generate_v4() NOT NULL
 );
@@ -117,7 +117,7 @@ CREATE TABLE edit_sessions (
 --
 
 CREATE TABLE favorites (
-    media_resource_id uuid,
+    media_resource_id uuid NOT NULL,
     user_id uuid NOT NULL
 );
 
@@ -141,7 +141,7 @@ CREATE TABLE grouppermissions (
     view boolean DEFAULT false NOT NULL,
     edit boolean DEFAULT false NOT NULL,
     manage boolean DEFAULT false NOT NULL,
-    media_resource_id uuid,
+    media_resource_id uuid NOT NULL,
     group_id uuid NOT NULL,
     id uuid DEFAULT uuid_generate_v4() NOT NULL,
     CONSTRAINT manage_on_grouppermissions_is_false CHECK ((manage = false))
@@ -201,7 +201,7 @@ CREATE TABLE media_files (
     updated_at timestamp without time zone NOT NULL,
     extension character varying(255),
     media_type character varying(255),
-    media_entry_id uuid,
+    media_entry_id uuid NOT NULL,
     id uuid DEFAULT uuid_generate_v4() NOT NULL
 );
 
@@ -213,8 +213,8 @@ CREATE TABLE media_files (
 CREATE TABLE media_resource_arcs (
     highlight boolean DEFAULT false,
     cover boolean,
-    parent_id uuid,
-    child_id uuid,
+    child_id uuid NOT NULL,
+    parent_id uuid NOT NULL,
     id uuid DEFAULT uuid_generate_v4() NOT NULL
 );
 
@@ -246,7 +246,7 @@ CREATE TABLE media_resources (
 
 CREATE TABLE media_sets_meta_contexts (
     meta_context_name character varying(255),
-    media_set_id uuid
+    media_set_id uuid NOT NULL
 );
 
 
@@ -283,7 +283,7 @@ CREATE TABLE meta_data (
     type character varying(255),
     string text,
     meta_key_id character varying(255),
-    media_resource_id uuid,
+    media_resource_id uuid NOT NULL,
     id uuid DEFAULT uuid_generate_v4() NOT NULL,
     copyright_id uuid
 );
@@ -465,7 +465,7 @@ CREATE TABLE userpermissions (
     view boolean DEFAULT false NOT NULL,
     edit boolean DEFAULT false NOT NULL,
     manage boolean DEFAULT false NOT NULL,
-    media_resource_id uuid,
+    media_resource_id uuid NOT NULL,
     user_id uuid NOT NULL,
     id uuid DEFAULT uuid_generate_v4() NOT NULL
 );
@@ -727,6 +727,27 @@ CREATE UNIQUE INDEX idx_name_unique ON permission_presets USING btree (name);
 
 
 --
+-- Name: index_app_settings_on_catalog_set_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_app_settings_on_catalog_set_id ON app_settings USING btree (catalog_set_id);
+
+
+--
+-- Name: index_app_settings_on_featured_set_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_app_settings_on_featured_set_id ON app_settings USING btree (featured_set_id);
+
+
+--
+-- Name: index_app_settings_on_splashscreen_slideshow_set_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_app_settings_on_splashscreen_slideshow_set_id ON app_settings USING btree (splashscreen_slideshow_set_id);
+
+
+--
 -- Name: index_copyrights_on_is_custom; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -899,13 +920,6 @@ CREATE INDEX index_media_resource_arcs_on_cover ON media_resource_arcs USING btr
 --
 
 CREATE INDEX index_media_resource_arcs_on_parent_id ON media_resource_arcs USING btree (parent_id);
-
-
---
--- Name: index_media_resource_arcs_on_parent_id_and_child_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE UNIQUE INDEX index_media_resource_arcs_on_parent_id_and_child_id ON media_resource_arcs USING btree (parent_id, child_id);
 
 
 --
@@ -1277,7 +1291,7 @@ CREATE UNIQUE INDEX unique_schema_migrations ON schema_migrations USING btree (v
 --
 
 ALTER TABLE ONLY app_settings
-    ADD CONSTRAINT app_settings_catalog_set_id_fk FOREIGN KEY (catalog_set_id) REFERENCES media_resources(id);
+    ADD CONSTRAINT app_settings_catalog_set_id_fk FOREIGN KEY (catalog_set_id) REFERENCES media_resources(id) ON DELETE SET NULL;
 
 
 --
@@ -1285,7 +1299,7 @@ ALTER TABLE ONLY app_settings
 --
 
 ALTER TABLE ONLY app_settings
-    ADD CONSTRAINT app_settings_featured_set_id_fk FOREIGN KEY (featured_set_id) REFERENCES media_resources(id);
+    ADD CONSTRAINT app_settings_featured_set_id_fk FOREIGN KEY (featured_set_id) REFERENCES media_resources(id) ON DELETE SET NULL;
 
 
 --
@@ -1301,7 +1315,7 @@ ALTER TABLE ONLY app_settings
 --
 
 ALTER TABLE ONLY app_settings
-    ADD CONSTRAINT app_settings_splashscreen_slideshow_set_id_fk FOREIGN KEY (splashscreen_slideshow_set_id) REFERENCES media_resources(id);
+    ADD CONSTRAINT app_settings_splashscreen_slideshow_set_id_fk FOREIGN KEY (splashscreen_slideshow_set_id) REFERENCES media_resources(id) ON DELETE SET NULL;
 
 
 --
@@ -1325,7 +1339,7 @@ ALTER TABLE ONLY copyrights
 --
 
 ALTER TABLE ONLY edit_sessions
-    ADD CONSTRAINT edit_sessions_media_resource_id_fk FOREIGN KEY (media_resource_id) REFERENCES media_resources(id) ON DELETE CASCADE;
+    ADD CONSTRAINT edit_sessions_media_resource_id_fk FOREIGN KEY (media_resource_id) REFERENCES media_resources(id);
 
 
 --
@@ -1341,7 +1355,7 @@ ALTER TABLE ONLY edit_sessions
 --
 
 ALTER TABLE ONLY favorites
-    ADD CONSTRAINT favorites_media_resource_id_fk FOREIGN KEY (media_resource_id) REFERENCES media_resources(id) ON DELETE CASCADE;
+    ADD CONSTRAINT favorites_media_resource_id_fk FOREIGN KEY (media_resource_id) REFERENCES media_resources(id);
 
 
 --
@@ -1357,7 +1371,7 @@ ALTER TABLE ONLY favorites
 --
 
 ALTER TABLE ONLY full_texts
-    ADD CONSTRAINT full_texts_media_resource_id_fk FOREIGN KEY (media_resource_id) REFERENCES media_resources(id) ON DELETE CASCADE;
+    ADD CONSTRAINT full_texts_media_resource_id_fk FOREIGN KEY (media_resource_id) REFERENCES media_resources(id);
 
 
 --
@@ -1373,7 +1387,7 @@ ALTER TABLE ONLY grouppermissions
 --
 
 ALTER TABLE ONLY grouppermissions
-    ADD CONSTRAINT grouppermissions_media_resource_id_fk FOREIGN KEY (media_resource_id) REFERENCES media_resources(id) ON DELETE CASCADE;
+    ADD CONSTRAINT grouppermissions_media_resource_id_fk FOREIGN KEY (media_resource_id) REFERENCES media_resources(id);
 
 
 --
@@ -1429,7 +1443,7 @@ ALTER TABLE ONLY media_files
 --
 
 ALTER TABLE ONLY media_resource_arcs
-    ADD CONSTRAINT media_resource_arcs_child_id_fk FOREIGN KEY (child_id) REFERENCES media_resources(id) ON DELETE CASCADE;
+    ADD CONSTRAINT media_resource_arcs_child_id_fk FOREIGN KEY (child_id) REFERENCES media_resources(id);
 
 
 --
@@ -1437,7 +1451,7 @@ ALTER TABLE ONLY media_resource_arcs
 --
 
 ALTER TABLE ONLY media_resource_arcs
-    ADD CONSTRAINT media_resource_arcs_parent_id_fk FOREIGN KEY (parent_id) REFERENCES media_resources(id) ON DELETE CASCADE;
+    ADD CONSTRAINT media_resource_arcs_parent_id_fk FOREIGN KEY (parent_id) REFERENCES media_resources(id);
 
 
 --
@@ -1453,7 +1467,7 @@ ALTER TABLE ONLY media_resources
 --
 
 ALTER TABLE ONLY media_sets_meta_contexts
-    ADD CONSTRAINT media_sets_meta_contexts_media_set_id_fk FOREIGN KEY (media_set_id) REFERENCES media_resources(id) ON DELETE CASCADE;
+    ADD CONSTRAINT media_sets_meta_contexts_media_set_id_fk FOREIGN KEY (media_set_id) REFERENCES media_resources(id);
 
 
 --
@@ -1501,7 +1515,7 @@ ALTER TABLE ONLY meta_data
 --
 
 ALTER TABLE ONLY meta_data
-    ADD CONSTRAINT meta_data_media_resource_id_fk FOREIGN KEY (media_resource_id) REFERENCES media_resources(id) ON DELETE CASCADE;
+    ADD CONSTRAINT meta_data_media_resource_id_fk FOREIGN KEY (media_resource_id) REFERENCES media_resources(id);
 
 
 --
@@ -1645,7 +1659,7 @@ ALTER TABLE ONLY previews
 --
 
 ALTER TABLE ONLY userpermissions
-    ADD CONSTRAINT userpermissions_media_resource_id_fk FOREIGN KEY (media_resource_id) REFERENCES media_resources(id) ON DELETE CASCADE;
+    ADD CONSTRAINT userpermissions_media_resource_id_fk FOREIGN KEY (media_resource_id) REFERENCES media_resources(id);
 
 
 --
