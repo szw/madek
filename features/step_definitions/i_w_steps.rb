@@ -45,7 +45,7 @@ end
 
 Then /^I wait until there are no more ajax requests running and no delays are pending$/  do
   # TODO bad, but works for now
-  sleep 1
+  sleep 5
   wait_until{ page.evaluate_script( %<$.active + $("[data-delay-timeout-pending]").length>) == 0}
 end
 
