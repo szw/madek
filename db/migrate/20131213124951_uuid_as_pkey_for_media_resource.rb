@@ -40,16 +40,16 @@ class UuidAsPkeyForMediaResource < ActiveRecord::Migration
     add_foreign_key 'app_settings', 'media_resources', column: 'catalog_set_id',  options: 'ON DELETE SET NULL' 
     add_foreign_key 'app_settings', 'media_resources', column: 'featured_set_id',  options: 'ON DELETE SET NULL' 
     add_foreign_key 'app_settings', 'media_resources', column: 'splashscreen_slideshow_set_id',  options: 'ON DELETE SET NULL' 
-    add_foreign_key 'edit_sessions', 'media_resources', dependent: 'delete'
-    add_foreign_key 'full_texts', 'media_resources', dependent: 'delete'
-    add_foreign_key 'grouppermissions', 'media_resources', dependent: 'delete'
+    add_foreign_key 'edit_sessions', 'media_resources', dependent: :delete
+    add_foreign_key 'full_texts', 'media_resources', dependent: :delete
+    add_foreign_key 'grouppermissions', 'media_resources', dependent: :delete
     add_foreign_key 'media_files', 'media_resources', column: 'media_entry_id'
-    add_foreign_key 'media_resource_arcs', 'media_resources', column: 'child_id', dependent: 'delete'
-    add_foreign_key 'media_resource_arcs', 'media_resources', column: 'parent_id', dependent: 'delete'
-    add_foreign_key 'media_sets_meta_contexts', 'media_resources', column: 'media_set_id', dependent: 'delete'
-    add_foreign_key 'meta_data', 'media_resources', dependent: 'delete'
-    add_foreign_key 'userpermissions', 'media_resources', dependent: 'delete'
-    add_foreign_key 'favorites', 'media_resources', dependent: 'delete'
+    add_foreign_key 'media_resource_arcs', 'media_resources', column: 'child_id', dependent: :delete
+    add_foreign_key 'media_resource_arcs', 'media_resources', column: 'parent_id', dependent: :delete
+    add_foreign_key 'media_sets_meta_contexts', 'media_resources', column: 'media_set_id', dependent: :delete
+    add_foreign_key 'meta_data', 'media_resources', dependent: :delete
+    add_foreign_key 'userpermissions', 'media_resources', dependent: :delete
+    add_foreign_key 'favorites', 'media_resources', dependent: :delete
 
   end
 

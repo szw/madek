@@ -18,7 +18,7 @@ class UuidAsPkeyForUsersEtc < ActiveRecord::Migration
     migrate_table 'groups'
     add_foreign_key 'grouppermissions', 'groups'
     add_foreign_key 'groups_users', 'groups'
-    add_foreign_key 'meta_data_meta_departments', 'groups', column: 'meta_department_id', dependent: 'delete'
+    add_foreign_key 'meta_data_meta_departments', 'groups', column: 'meta_department_id', dependent: :delete
     add_index :groups_users, [:group_id,:user_id], unique: true
 
 
@@ -41,14 +41,14 @@ class UuidAsPkeyForUsersEtc < ActiveRecord::Migration
 
     migrate_table 'users'
 
-    add_foreign_key 'edit_sessions', 'users', dependent: 'delete'
-    add_foreign_key 'favorites', 'users', dependent: 'delete'
-    add_foreign_key 'groups_users', 'users', dependent: 'delete'
+    add_foreign_key 'edit_sessions', 'users', dependent: :delete
+    add_foreign_key 'favorites', 'users', dependent: :delete
+    add_foreign_key 'groups_users', 'users', dependent: :delete
     add_foreign_key 'keywords', 'users'
     add_foreign_key 'media_resources', 'users'
-    add_foreign_key 'meta_data_users', 'users', dependent: 'delete'
-    add_foreign_key 'userpermissions', 'users', dependent: 'delete'
-    add_foreign_key 'visualizations', 'users', dependent: 'delete'
+    add_foreign_key 'meta_data_users', 'users', dependent: :delete
+    add_foreign_key 'userpermissions', 'users', dependent: :delete
+    add_foreign_key 'visualizations', 'users', dependent: :delete
 
     add_index :visualizations, [:user_id,:resource_identifier], unique: true
 

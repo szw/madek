@@ -38,11 +38,11 @@ class UuidAsPkeyForMetaEverything < ActiveRecord::Migration
 
     migrate_table 'meta_data'
 
-    add_foreign_key 'meta_data_meta_terms', 'meta_data', dependent: 'delete'
-    add_foreign_key 'keywords', 'meta_data', dependent: 'delete'
-    add_foreign_key 'meta_data_people', 'meta_data', dependent: 'delete'
-    add_foreign_key 'meta_data_users', 'meta_data', dependent: 'delete'
-    add_foreign_key 'meta_data_meta_departments', 'meta_data', dependent: 'delete'
+    add_foreign_key 'meta_data_meta_terms', 'meta_data', dependent: :delete
+    add_foreign_key 'keywords', 'meta_data', dependent: :delete
+    add_foreign_key 'meta_data_people', 'meta_data', dependent: :delete
+    add_foreign_key 'meta_data_users', 'meta_data', dependent: :delete
+    add_foreign_key 'meta_data_meta_departments', 'meta_data', dependent: :delete
 
     add_index :meta_data_meta_terms, [:meta_datum_id, :meta_term_id], unique: true
     add_index :meta_data_people, [:meta_datum_id, :person_id], unique: true
@@ -67,10 +67,10 @@ class UuidAsPkeyForMetaEverything < ActiveRecord::Migration
 
     migrate_table 'meta_terms'
 
-    add_foreign_key 'keywords', 'meta_terms', dependent: 'delete'
+    add_foreign_key 'keywords', 'meta_terms', dependent: :delete
     add_foreign_key 'meta_contexts', 'meta_terms', column: 'description_id', options: 'ON DELETE SET NULL'
     add_foreign_key 'meta_contexts', 'meta_terms', column: 'label_id'
-    add_foreign_key 'meta_data_meta_terms', 'meta_terms', dependent: 'delete'
+    add_foreign_key 'meta_data_meta_terms', 'meta_terms', dependent: :delete
     add_foreign_key 'meta_key_definitions', 'meta_terms', column: 'description_id', options: 'ON DELETE SET NULL'
     add_foreign_key 'meta_key_definitions', 'meta_terms', column: 'hint_id', options: 'ON DELETE SET NULL'
     add_foreign_key 'meta_key_definitions', 'meta_terms', column: 'label_id', options: 'ON DELETE SET NULL' 

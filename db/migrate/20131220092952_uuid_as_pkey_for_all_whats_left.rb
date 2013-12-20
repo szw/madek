@@ -23,7 +23,7 @@ class UuidAsPkeyForAllWhatsLeft < ActiveRecord::Migration
     migrate_foreign_key 'zencoder_jobs', 'media_files'
     migrate_table :media_files
     add_foreign_key 'previews', 'media_files'
-    add_foreign_key 'zencoder_jobs', 'media_files', dependent: 'delete'
+    add_foreign_key 'zencoder_jobs', 'media_files', dependent: :delete
 
     # edit sessions
     prepare_table 'edit_sessions'

@@ -1339,7 +1339,7 @@ ALTER TABLE ONLY copyrights
 --
 
 ALTER TABLE ONLY edit_sessions
-    ADD CONSTRAINT edit_sessions_media_resource_id_fk FOREIGN KEY (media_resource_id) REFERENCES media_resources(id);
+    ADD CONSTRAINT edit_sessions_media_resource_id_fk FOREIGN KEY (media_resource_id) REFERENCES media_resources(id) ON DELETE CASCADE;
 
 
 --
@@ -1347,7 +1347,7 @@ ALTER TABLE ONLY edit_sessions
 --
 
 ALTER TABLE ONLY edit_sessions
-    ADD CONSTRAINT edit_sessions_user_id_fk FOREIGN KEY (user_id) REFERENCES users(id);
+    ADD CONSTRAINT edit_sessions_user_id_fk FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 
 --
@@ -1355,7 +1355,7 @@ ALTER TABLE ONLY edit_sessions
 --
 
 ALTER TABLE ONLY favorites
-    ADD CONSTRAINT favorites_media_resource_id_fk FOREIGN KEY (media_resource_id) REFERENCES media_resources(id);
+    ADD CONSTRAINT favorites_media_resource_id_fk FOREIGN KEY (media_resource_id) REFERENCES media_resources(id) ON DELETE CASCADE;
 
 
 --
@@ -1363,7 +1363,7 @@ ALTER TABLE ONLY favorites
 --
 
 ALTER TABLE ONLY favorites
-    ADD CONSTRAINT favorites_user_id_fk FOREIGN KEY (user_id) REFERENCES users(id);
+    ADD CONSTRAINT favorites_user_id_fk FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 
 --
@@ -1371,7 +1371,7 @@ ALTER TABLE ONLY favorites
 --
 
 ALTER TABLE ONLY full_texts
-    ADD CONSTRAINT full_texts_media_resource_id_fk FOREIGN KEY (media_resource_id) REFERENCES media_resources(id);
+    ADD CONSTRAINT full_texts_media_resource_id_fk FOREIGN KEY (media_resource_id) REFERENCES media_resources(id) ON DELETE CASCADE;
 
 
 --
@@ -1387,7 +1387,7 @@ ALTER TABLE ONLY grouppermissions
 --
 
 ALTER TABLE ONLY grouppermissions
-    ADD CONSTRAINT grouppermissions_media_resource_id_fk FOREIGN KEY (media_resource_id) REFERENCES media_resources(id);
+    ADD CONSTRAINT grouppermissions_media_resource_id_fk FOREIGN KEY (media_resource_id) REFERENCES media_resources(id) ON DELETE CASCADE;
 
 
 --
@@ -1403,7 +1403,7 @@ ALTER TABLE ONLY groups_users
 --
 
 ALTER TABLE ONLY groups_users
-    ADD CONSTRAINT groups_users_user_id_fk FOREIGN KEY (user_id) REFERENCES users(id);
+    ADD CONSTRAINT groups_users_user_id_fk FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 
 --
@@ -1411,7 +1411,7 @@ ALTER TABLE ONLY groups_users
 --
 
 ALTER TABLE ONLY keywords
-    ADD CONSTRAINT keywords_meta_datum_id_fk FOREIGN KEY (meta_datum_id) REFERENCES meta_data(id);
+    ADD CONSTRAINT keywords_meta_datum_id_fk FOREIGN KEY (meta_datum_id) REFERENCES meta_data(id) ON DELETE CASCADE;
 
 
 --
@@ -1419,7 +1419,7 @@ ALTER TABLE ONLY keywords
 --
 
 ALTER TABLE ONLY keywords
-    ADD CONSTRAINT keywords_meta_term_id_fk FOREIGN KEY (meta_term_id) REFERENCES meta_terms(id);
+    ADD CONSTRAINT keywords_meta_term_id_fk FOREIGN KEY (meta_term_id) REFERENCES meta_terms(id) ON DELETE CASCADE;
 
 
 --
@@ -1443,7 +1443,7 @@ ALTER TABLE ONLY media_files
 --
 
 ALTER TABLE ONLY media_resource_arcs
-    ADD CONSTRAINT media_resource_arcs_child_id_fk FOREIGN KEY (child_id) REFERENCES media_resources(id);
+    ADD CONSTRAINT media_resource_arcs_child_id_fk FOREIGN KEY (child_id) REFERENCES media_resources(id) ON DELETE CASCADE;
 
 
 --
@@ -1451,7 +1451,7 @@ ALTER TABLE ONLY media_resource_arcs
 --
 
 ALTER TABLE ONLY media_resource_arcs
-    ADD CONSTRAINT media_resource_arcs_parent_id_fk FOREIGN KEY (parent_id) REFERENCES media_resources(id);
+    ADD CONSTRAINT media_resource_arcs_parent_id_fk FOREIGN KEY (parent_id) REFERENCES media_resources(id) ON DELETE CASCADE;
 
 
 --
@@ -1467,7 +1467,7 @@ ALTER TABLE ONLY media_resources
 --
 
 ALTER TABLE ONLY media_sets_meta_contexts
-    ADD CONSTRAINT media_sets_meta_contexts_media_set_id_fk FOREIGN KEY (media_set_id) REFERENCES media_resources(id);
+    ADD CONSTRAINT media_sets_meta_contexts_media_set_id_fk FOREIGN KEY (media_set_id) REFERENCES media_resources(id) ON DELETE CASCADE;
 
 
 --
@@ -1515,7 +1515,7 @@ ALTER TABLE ONLY meta_data
 --
 
 ALTER TABLE ONLY meta_data
-    ADD CONSTRAINT meta_data_media_resource_id_fk FOREIGN KEY (media_resource_id) REFERENCES media_resources(id);
+    ADD CONSTRAINT meta_data_media_resource_id_fk FOREIGN KEY (media_resource_id) REFERENCES media_resources(id) ON DELETE CASCADE;
 
 
 --
@@ -1523,7 +1523,7 @@ ALTER TABLE ONLY meta_data
 --
 
 ALTER TABLE ONLY meta_data_meta_departments
-    ADD CONSTRAINT meta_data_meta_departments_meta_datum_id_fk FOREIGN KEY (meta_datum_id) REFERENCES meta_data(id);
+    ADD CONSTRAINT meta_data_meta_departments_meta_datum_id_fk FOREIGN KEY (meta_datum_id) REFERENCES meta_data(id) ON DELETE CASCADE;
 
 
 --
@@ -1531,7 +1531,7 @@ ALTER TABLE ONLY meta_data_meta_departments
 --
 
 ALTER TABLE ONLY meta_data_meta_departments
-    ADD CONSTRAINT meta_data_meta_departments_meta_department_id_fk FOREIGN KEY (meta_department_id) REFERENCES groups(id);
+    ADD CONSTRAINT meta_data_meta_departments_meta_department_id_fk FOREIGN KEY (meta_department_id) REFERENCES groups(id) ON DELETE CASCADE;
 
 
 --
@@ -1547,7 +1547,7 @@ ALTER TABLE ONLY meta_data
 --
 
 ALTER TABLE ONLY meta_data_meta_terms
-    ADD CONSTRAINT meta_data_meta_terms_meta_datum_id_fk FOREIGN KEY (meta_datum_id) REFERENCES meta_data(id);
+    ADD CONSTRAINT meta_data_meta_terms_meta_datum_id_fk FOREIGN KEY (meta_datum_id) REFERENCES meta_data(id) ON DELETE CASCADE;
 
 
 --
@@ -1555,7 +1555,7 @@ ALTER TABLE ONLY meta_data_meta_terms
 --
 
 ALTER TABLE ONLY meta_data_meta_terms
-    ADD CONSTRAINT meta_data_meta_terms_meta_term_id_fk FOREIGN KEY (meta_term_id) REFERENCES meta_terms(id);
+    ADD CONSTRAINT meta_data_meta_terms_meta_term_id_fk FOREIGN KEY (meta_term_id) REFERENCES meta_terms(id) ON DELETE CASCADE;
 
 
 --
@@ -1563,7 +1563,7 @@ ALTER TABLE ONLY meta_data_meta_terms
 --
 
 ALTER TABLE ONLY meta_data_people
-    ADD CONSTRAINT meta_data_people_meta_datum_id_fk FOREIGN KEY (meta_datum_id) REFERENCES meta_data(id);
+    ADD CONSTRAINT meta_data_people_meta_datum_id_fk FOREIGN KEY (meta_datum_id) REFERENCES meta_data(id) ON DELETE CASCADE;
 
 
 --
@@ -1579,7 +1579,7 @@ ALTER TABLE ONLY meta_data_people
 --
 
 ALTER TABLE ONLY meta_data_users
-    ADD CONSTRAINT meta_data_users_meta_datum_id_fk FOREIGN KEY (meta_datum_id) REFERENCES meta_data(id);
+    ADD CONSTRAINT meta_data_users_meta_datum_id_fk FOREIGN KEY (meta_datum_id) REFERENCES meta_data(id) ON DELETE CASCADE;
 
 
 --
@@ -1587,7 +1587,7 @@ ALTER TABLE ONLY meta_data_users
 --
 
 ALTER TABLE ONLY meta_data_users
-    ADD CONSTRAINT meta_data_users_user_id_fk FOREIGN KEY (user_id) REFERENCES users(id);
+    ADD CONSTRAINT meta_data_users_user_id_fk FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 
 --
@@ -1659,7 +1659,7 @@ ALTER TABLE ONLY previews
 --
 
 ALTER TABLE ONLY userpermissions
-    ADD CONSTRAINT userpermissions_media_resource_id_fk FOREIGN KEY (media_resource_id) REFERENCES media_resources(id);
+    ADD CONSTRAINT userpermissions_media_resource_id_fk FOREIGN KEY (media_resource_id) REFERENCES media_resources(id) ON DELETE CASCADE;
 
 
 --
@@ -1667,7 +1667,7 @@ ALTER TABLE ONLY userpermissions
 --
 
 ALTER TABLE ONLY userpermissions
-    ADD CONSTRAINT userpermissions_user_id_fk FOREIGN KEY (user_id) REFERENCES users(id);
+    ADD CONSTRAINT userpermissions_user_id_fk FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 
 --
@@ -1683,7 +1683,7 @@ ALTER TABLE ONLY users
 --
 
 ALTER TABLE ONLY visualizations
-    ADD CONSTRAINT visualizations_user_id_fk FOREIGN KEY (user_id) REFERENCES users(id);
+    ADD CONSTRAINT visualizations_user_id_fk FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 
 --
@@ -1691,7 +1691,7 @@ ALTER TABLE ONLY visualizations
 --
 
 ALTER TABLE ONLY zencoder_jobs
-    ADD CONSTRAINT zencoder_jobs_media_file_id_fk FOREIGN KEY (media_file_id) REFERENCES media_files(id);
+    ADD CONSTRAINT zencoder_jobs_media_file_id_fk FOREIGN KEY (media_file_id) REFERENCES media_files(id) ON DELETE CASCADE;
 
 
 --
