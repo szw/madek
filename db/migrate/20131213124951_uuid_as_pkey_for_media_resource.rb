@@ -20,7 +20,7 @@ class UuidAsPkeyForMediaResource < ActiveRecord::Migration
     migrate_foreign_key 'edit_sessions', 'media_resources'
     migrate_foreign_key 'full_texts', 'media_resources'
     migrate_foreign_key 'grouppermissions', 'media_resources'
-    migrate_foreign_key 'media_files', 'media_resources', false, 'media_entry_id'
+    migrate_foreign_key 'media_files', 'media_resources', true, 'media_entry_id'
     migrate_foreign_key 'media_resource_arcs', 'media_resources', false, 'child_id'
     migrate_foreign_key 'media_resource_arcs', 'media_resources', false, 'parent_id'
     migrate_foreign_key 'media_sets_meta_contexts', 'media_resources', false, 'media_set_id'

@@ -201,7 +201,7 @@ CREATE TABLE media_files (
     updated_at timestamp without time zone NOT NULL,
     extension character varying(255),
     media_type character varying(255),
-    media_entry_id uuid NOT NULL,
+    media_entry_id uuid,
     id uuid DEFAULT uuid_generate_v4() NOT NULL
 );
 
