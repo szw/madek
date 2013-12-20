@@ -6,13 +6,23 @@ class UuidAsPkeyForMetaEverything < ActiveRecord::Migration
 
   def up
 
-
     #
     # meta_keys_meta_terms
     #
      
     prepare_table 'meta_keys_meta_terms'
     migrate_table 'meta_keys_meta_terms'
+
+
+    #
+    # meta_context_groups
+    #
+
+    prepare_table 'meta_context_groups'
+    migrate_foreign_key 'meta_contexts', 'meta_context_groups', true
+    migrate_table 'meta_context_groups'
+    add_foreign_key 'meta_contexts', 'meta_context_groups', options: 'ON DELETE SET NULL' 
+
 
     #
     # meta_data
@@ -66,8 +76,5 @@ class UuidAsPkeyForMetaEverything < ActiveRecord::Migration
     add_foreign_key 'meta_key_definitions', 'meta_terms', column: 'label_id', options: 'ON DELETE SET NULL' 
     add_foreign_key 'meta_keys_meta_terms', 'meta_terms'
 
-
-
-    raise 'NOT YET' 
   end
 end
