@@ -76,5 +76,23 @@ class UuidAsPkeyForMetaEverything < ActiveRecord::Migration
     add_foreign_key 'meta_key_definitions', 'meta_terms', column: 'label_id', options: 'ON DELETE SET NULL' 
     add_foreign_key 'meta_keys_meta_terms', 'meta_terms'
 
+
+    #
+    # copyrights
+    #
+
+    prepare_table 'copyrights'
+    migrate_foreign_key 'meta_data', 'copyrights', true
+    add_column :copyrights, :parent_uuid, :uuid
+    execute %[ UPDATE copyrights 
+                SET parent_uuid = cp.uuid 
+                FROM copyrights as cp
+                WHERE copyrights.parent_id = cp.parent_id] 
+    remove_column :copyrights, :parent_id
+    rename_column :copyrights, :parent_uuid, :parent_id
+    migrate_table 'copyrights'
+    add_foreign_key :copyrights, :copyrights, column: :parent_id
+    add_foreign_key 'meta_data', 'copyrights'
+
   end
 end

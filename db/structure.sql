@@ -303,8 +303,8 @@ CREATE TABLE meta_data (
     string text,
     meta_key_id character varying(255),
     media_resource_id uuid,
-    copyright_id uuid,
-    id uuid DEFAULT uuid_generate_v4() NOT NULL
+    id uuid DEFAULT uuid_generate_v4() NOT NULL,
+    copyright_id uuid
 );
 
 
@@ -1623,7 +1623,7 @@ ALTER TABLE ONLY meta_contexts
 --
 
 ALTER TABLE ONLY meta_data
-    ADD CONSTRAINT meta_data_copyright_id_fk FOREIGN KEY (copyright_id) REFERENCES copyrights(id) ON DELETE CASCADE;
+    ADD CONSTRAINT meta_data_copyright_id_fk FOREIGN KEY (copyright_id) REFERENCES copyrights(id);
 
 
 --
@@ -1903,8 +1903,6 @@ INSERT INTO schema_migrations (version) VALUES ('20131009083332');
 INSERT INTO schema_migrations (version) VALUES ('20131105100927');
 
 INSERT INTO schema_migrations (version) VALUES ('20131213124951');
-
-INSERT INTO schema_migrations (version) VALUES ('20131219083359');
 
 INSERT INTO schema_migrations (version) VALUES ('20131219093649');
 

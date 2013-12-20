@@ -1,5 +1,5 @@
 require Rails.root.join "db","migrate","uuid_migration_helper"
-class UuidAsKeyAllWhatsLeft < ActiveRecord::Migration
+class UuidAsPkeyForAllWhatsLeft < ActiveRecord::Migration
   include ::UuidMigrationHelper
 
   def up

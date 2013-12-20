@@ -1,6 +1,6 @@
 require Rails.root.join "db","migrate","uuid_migration_helper"
 
-class UuidForUsersAndPeople < ActiveRecord::Migration
+class UuidForUsersEtc < ActiveRecord::Migration
 
   include ::UuidMigrationHelper
 
@@ -20,18 +20,6 @@ class UuidForUsersAndPeople < ActiveRecord::Migration
     add_foreign_key 'groups_users', 'groups'
     add_foreign_key 'meta_data_meta_departments', 'groups', column: 'meta_department_id', dependent: 'delete'
     add_index :groups_users, [:group_id,:user_id], unique: true
-
-    #
-    # Grouppermissions
-    #
-    prepare_table 'grouppermissions'
-    migrate_table 'grouppermissions'
-
-    #
-    # Userpermissions
-    #
-    prepare_table 'userpermissions'
-    migrate_table 'userpermissions'
 
 
     #
