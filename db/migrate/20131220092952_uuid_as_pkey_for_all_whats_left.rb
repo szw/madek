@@ -29,6 +29,21 @@ class UuidAsPkeyForAllWhatsLeft < ActiveRecord::Migration
     prepare_table 'edit_sessions'
     migrate_table 'edit_sessions'
 
+    prepare_table 'keywords'
+    migrate_table 'keywords'
+
+    prepare_table 'meta_key_definitions'
+    migrate_table 'meta_key_definitions'
+
+    prepare_table 'permission_presets'
+    migrate_table 'permission_presets'
+
+    prepare_table 'previews'
+    migrate_table 'previews'
+
+    prepare_table 'usage_terms'
+    migrate_table 'usage_terms'
+
   end
 
 
