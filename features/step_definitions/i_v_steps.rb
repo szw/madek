@@ -55,12 +55,15 @@ Then /^I visualize the filter Suchergebnisse für "(.*?)"$/ do |search|
 end
 
 Then /^I visualize the descendants of a Set$/ do
-  @set = MediaSet.find("9b7229e7-d080-4471-9594-6e583abe4fd2")
+  @set = @me.media_sets.where(%[ EXISTS (SELECT true FROM media_resource_arcs WHERE child_id = media_resources.id) ]) \
+    .where(%[ EXISTS (SELECT true FROM media_resource_arcs WHERE parent_id= media_resources.id) ]).first
   visit "/visualization/descendants_of/#{@set.id}"
 end
 
 Then /^I visualize the component of a Entry$/ do
-  @entry = MediaResource.find("2cf95539-cb6c-4737-acca-bae68799b2fc")
+  @entry = @me.media_resources \
+    .where(%[ EXISTS (SELECT true FROM media_resource_arcs WHERE child_id = media_resources.id) ]) \
+    .first
   visit "/visualization/component_with/#{@entry.id}"
 end
 
