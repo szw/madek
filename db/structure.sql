@@ -107,8 +107,8 @@ CREATE TABLE edit_sessions (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     media_resource_id uuid,
-    id uuid DEFAULT uuid_generate_v4() NOT NULL,
-    user_id uuid NOT NULL
+    user_id uuid NOT NULL,
+    id uuid DEFAULT uuid_generate_v4() NOT NULL
 );
 
 
@@ -142,8 +142,8 @@ CREATE TABLE grouppermissions (
     edit boolean DEFAULT false NOT NULL,
     manage boolean DEFAULT false NOT NULL,
     media_resource_id uuid,
+    group_id uuid NOT NULL,
     id uuid DEFAULT uuid_generate_v4() NOT NULL,
-    group_id uuid,
     CONSTRAINT manage_on_grouppermissions_is_false CHECK ((manage = false))
 );
 
@@ -166,7 +166,7 @@ CREATE TABLE groups (
 --
 
 CREATE TABLE groups_users (
-    group_id uuid,
+    group_id uuid NOT NULL,
     user_id uuid NOT NULL
 );
 
@@ -176,12 +176,31 @@ CREATE TABLE groups_users (
 --
 
 CREATE TABLE keywords (
+    id integer NOT NULL,
     created_at timestamp without time zone,
-    id uuid DEFAULT uuid_generate_v4() NOT NULL,
-    meta_datum_id uuid,
-    meta_term_id uuid,
-    user_id uuid
+    user_id uuid,
+    meta_datum_id uuid NOT NULL,
+    meta_term_id uuid NOT NULL
 );
+
+
+--
+-- Name: keywords_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE keywords_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: keywords_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE keywords_id_seq OWNED BY keywords.id;
 
 
 --
@@ -270,8 +289,8 @@ CREATE TABLE meta_contexts (
     "position" integer,
     name character varying(255) NOT NULL,
     meta_context_group_id uuid,
-    description_id uuid,
-    label_id uuid NOT NULL
+    label_id uuid NOT NULL,
+    description_id uuid
 );
 
 
@@ -294,8 +313,8 @@ CREATE TABLE meta_data (
 --
 
 CREATE TABLE meta_data_meta_departments (
-    meta_department_id uuid,
-    meta_datum_id uuid
+    meta_department_id uuid NOT NULL,
+    meta_datum_id uuid NOT NULL
 );
 
 
@@ -304,7 +323,7 @@ CREATE TABLE meta_data_meta_departments (
 --
 
 CREATE TABLE meta_data_meta_terms (
-    meta_datum_id uuid,
+    meta_datum_id uuid NOT NULL,
     meta_term_id uuid NOT NULL
 );
 
@@ -314,8 +333,8 @@ CREATE TABLE meta_data_meta_terms (
 --
 
 CREATE TABLE meta_data_people (
-    meta_datum_id uuid,
-    person_id uuid NOT NULL
+    person_id uuid NOT NULL,
+    meta_datum_id uuid NOT NULL
 );
 
 
@@ -324,8 +343,8 @@ CREATE TABLE meta_data_people (
 --
 
 CREATE TABLE meta_data_users (
-    meta_datum_id uuid,
-    user_id uuid NOT NULL
+    user_id uuid NOT NULL,
+    meta_datum_id uuid NOT NULL
 );
 
 
@@ -334,6 +353,7 @@ CREATE TABLE meta_data_users (
 --
 
 CREATE TABLE meta_key_definitions (
+    id integer NOT NULL,
     is_required boolean DEFAULT false,
     length_max integer,
     length_min integer,
@@ -344,11 +364,29 @@ CREATE TABLE meta_key_definitions (
     updated_at timestamp without time zone NOT NULL,
     meta_key_id character varying(255),
     meta_context_name character varying(255),
-    id uuid DEFAULT uuid_generate_v4() NOT NULL,
     description_id uuid,
-    label_id uuid,
-    hint_id uuid
+    hint_id uuid,
+    label_id uuid
 );
+
+
+--
+-- Name: meta_key_definitions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE meta_key_definitions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: meta_key_definitions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE meta_key_definitions_id_seq OWNED BY meta_key_definitions.id;
 
 
 --
@@ -407,13 +445,32 @@ CREATE TABLE people (
 --
 
 CREATE TABLE permission_presets (
+    id integer NOT NULL,
     name character varying(255),
     download boolean DEFAULT false NOT NULL,
     view boolean DEFAULT false NOT NULL,
     edit boolean DEFAULT false NOT NULL,
-    manage boolean DEFAULT false NOT NULL,
-    id uuid DEFAULT uuid_generate_v4() NOT NULL
+    manage boolean DEFAULT false NOT NULL
 );
+
+
+--
+-- Name: permission_presets_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE permission_presets_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: permission_presets_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE permission_presets_id_seq OWNED BY permission_presets.id;
 
 
 --
@@ -421,6 +478,7 @@ CREATE TABLE permission_presets (
 --
 
 CREATE TABLE previews (
+    id integer NOT NULL,
     height integer,
     width integer,
     content_type character varying(255),
@@ -428,9 +486,27 @@ CREATE TABLE previews (
     thumbnail character varying(255),
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    id uuid DEFAULT uuid_generate_v4() NOT NULL,
-    media_file_id uuid
+    media_file_id uuid NOT NULL
 );
+
+
+--
+-- Name: previews_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE previews_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: previews_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE previews_id_seq OWNED BY previews.id;
 
 
 --
@@ -485,8 +561,8 @@ CREATE TABLE userpermissions (
     edit boolean DEFAULT false NOT NULL,
     manage boolean DEFAULT false NOT NULL,
     media_resource_id uuid,
-    id uuid DEFAULT uuid_generate_v4() NOT NULL,
-    user_id uuid NOT NULL
+    user_id uuid NOT NULL,
+    id uuid DEFAULT uuid_generate_v4() NOT NULL
 );
 
 
@@ -535,8 +611,36 @@ CREATE TABLE zencoder_jobs (
     response text,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    media_file_id uuid
+    media_file_id uuid NOT NULL
 );
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY keywords ALTER COLUMN id SET DEFAULT nextval('keywords_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY meta_key_definitions ALTER COLUMN id SET DEFAULT nextval('meta_key_definitions_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY permission_presets ALTER COLUMN id SET DEFAULT nextval('permission_presets_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY previews ALTER COLUMN id SET DEFAULT nextval('previews_id_seq'::regclass);
 
 
 --
@@ -1110,6 +1214,13 @@ CREATE INDEX index_meta_data_users_on_meta_datum_id ON meta_data_users USING btr
 
 
 --
+-- Name: index_meta_data_users_on_meta_datum_id_and_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_meta_data_users_on_meta_datum_id_and_user_id ON meta_data_users USING btree (meta_datum_id, user_id);
+
+
+--
 -- Name: index_meta_data_users_on_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1384,7 +1495,7 @@ ALTER TABLE ONLY full_texts
 --
 
 ALTER TABLE ONLY grouppermissions
-    ADD CONSTRAINT grouppermissions_group_id_fk FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE;
+    ADD CONSTRAINT grouppermissions_group_id_fk FOREIGN KEY (group_id) REFERENCES groups(id);
 
 
 --
@@ -1400,7 +1511,7 @@ ALTER TABLE ONLY grouppermissions
 --
 
 ALTER TABLE ONLY groups_users
-    ADD CONSTRAINT groups_users_group_id_fk FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE;
+    ADD CONSTRAINT groups_users_group_id_fk FOREIGN KEY (group_id) REFERENCES groups(id);
 
 
 --
@@ -1416,7 +1527,7 @@ ALTER TABLE ONLY groups_users
 --
 
 ALTER TABLE ONLY keywords
-    ADD CONSTRAINT keywords_meta_datum_id_fk FOREIGN KEY (meta_datum_id) REFERENCES meta_data(id) ON DELETE CASCADE;
+    ADD CONSTRAINT keywords_meta_datum_id_fk FOREIGN KEY (meta_datum_id) REFERENCES meta_data(id);
 
 
 --
@@ -1424,7 +1535,7 @@ ALTER TABLE ONLY keywords
 --
 
 ALTER TABLE ONLY keywords
-    ADD CONSTRAINT keywords_meta_term_id_fk FOREIGN KEY (meta_term_id) REFERENCES meta_terms(id) ON DELETE CASCADE;
+    ADD CONSTRAINT keywords_meta_term_id_fk FOREIGN KEY (meta_term_id) REFERENCES meta_terms(id);
 
 
 --
@@ -1488,7 +1599,7 @@ ALTER TABLE ONLY media_sets_meta_contexts
 --
 
 ALTER TABLE ONLY meta_contexts
-    ADD CONSTRAINT meta_contexts_description_id_fk FOREIGN KEY (description_id) REFERENCES meta_terms(id);
+    ADD CONSTRAINT meta_contexts_description_id_fk FOREIGN KEY (description_id) REFERENCES meta_terms(id) ON DELETE SET NULL;
 
 
 --
@@ -1528,7 +1639,7 @@ ALTER TABLE ONLY meta_data
 --
 
 ALTER TABLE ONLY meta_data_meta_departments
-    ADD CONSTRAINT meta_data_meta_departments_meta_datum_id_fk FOREIGN KEY (meta_datum_id) REFERENCES meta_data(id) ON DELETE CASCADE;
+    ADD CONSTRAINT meta_data_meta_departments_meta_datum_id_fk FOREIGN KEY (meta_datum_id) REFERENCES meta_data(id);
 
 
 --
@@ -1536,7 +1647,7 @@ ALTER TABLE ONLY meta_data_meta_departments
 --
 
 ALTER TABLE ONLY meta_data_meta_departments
-    ADD CONSTRAINT meta_data_meta_departments_meta_department_id_fk FOREIGN KEY (meta_department_id) REFERENCES groups(id) ON DELETE CASCADE;
+    ADD CONSTRAINT meta_data_meta_departments_meta_department_id_fk FOREIGN KEY (meta_department_id) REFERENCES groups(id);
 
 
 --
@@ -1552,7 +1663,7 @@ ALTER TABLE ONLY meta_data
 --
 
 ALTER TABLE ONLY meta_data_meta_terms
-    ADD CONSTRAINT meta_data_meta_terms_meta_datum_id_fk FOREIGN KEY (meta_datum_id) REFERENCES meta_data(id) ON DELETE CASCADE;
+    ADD CONSTRAINT meta_data_meta_terms_meta_datum_id_fk FOREIGN KEY (meta_datum_id) REFERENCES meta_data(id);
 
 
 --
@@ -1568,7 +1679,7 @@ ALTER TABLE ONLY meta_data_meta_terms
 --
 
 ALTER TABLE ONLY meta_data_people
-    ADD CONSTRAINT meta_data_people_meta_datum_id_fk FOREIGN KEY (meta_datum_id) REFERENCES meta_data(id) ON DELETE CASCADE;
+    ADD CONSTRAINT meta_data_people_meta_datum_id_fk FOREIGN KEY (meta_datum_id) REFERENCES meta_data(id);
 
 
 --
@@ -1584,7 +1695,7 @@ ALTER TABLE ONLY meta_data_people
 --
 
 ALTER TABLE ONLY meta_data_users
-    ADD CONSTRAINT meta_data_users_meta_datum_id_fk FOREIGN KEY (meta_datum_id) REFERENCES meta_data(id) ON DELETE CASCADE;
+    ADD CONSTRAINT meta_data_users_meta_datum_id_fk FOREIGN KEY (meta_datum_id) REFERENCES meta_data(id);
 
 
 --
@@ -1600,7 +1711,7 @@ ALTER TABLE ONLY meta_data_users
 --
 
 ALTER TABLE ONLY meta_key_definitions
-    ADD CONSTRAINT meta_key_definitions_description_id_fk FOREIGN KEY (description_id) REFERENCES meta_terms(id);
+    ADD CONSTRAINT meta_key_definitions_description_id_fk FOREIGN KEY (description_id) REFERENCES meta_terms(id) ON DELETE SET NULL;
 
 
 --
@@ -1608,7 +1719,7 @@ ALTER TABLE ONLY meta_key_definitions
 --
 
 ALTER TABLE ONLY meta_key_definitions
-    ADD CONSTRAINT meta_key_definitions_hint_id_fk FOREIGN KEY (hint_id) REFERENCES meta_terms(id);
+    ADD CONSTRAINT meta_key_definitions_hint_id_fk FOREIGN KEY (hint_id) REFERENCES meta_terms(id) ON DELETE SET NULL;
 
 
 --
@@ -1616,7 +1727,7 @@ ALTER TABLE ONLY meta_key_definitions
 --
 
 ALTER TABLE ONLY meta_key_definitions
-    ADD CONSTRAINT meta_key_definitions_label_id_fk FOREIGN KEY (label_id) REFERENCES meta_terms(id);
+    ADD CONSTRAINT meta_key_definitions_label_id_fk FOREIGN KEY (label_id) REFERENCES meta_terms(id) ON DELETE SET NULL;
 
 
 --
@@ -1648,7 +1759,7 @@ ALTER TABLE ONLY meta_keys_meta_terms
 --
 
 ALTER TABLE ONLY meta_keys_meta_terms
-    ADD CONSTRAINT meta_keys_meta_terms_meta_term_id_fk FOREIGN KEY (meta_term_id) REFERENCES meta_terms(id) ON DELETE CASCADE;
+    ADD CONSTRAINT meta_keys_meta_terms_meta_term_id_fk FOREIGN KEY (meta_term_id) REFERENCES meta_terms(id);
 
 
 --
@@ -1696,7 +1807,7 @@ ALTER TABLE ONLY visualizations
 --
 
 ALTER TABLE ONLY zencoder_jobs
-    ADD CONSTRAINT zencoder_jobs_media_file_id_fk FOREIGN KEY (media_file_id) REFERENCES media_files(id) ON DELETE CASCADE;
+    ADD CONSTRAINT zencoder_jobs_media_file_id_fk FOREIGN KEY (media_file_id) REFERENCES media_files(id);
 
 
 --
@@ -1795,27 +1906,13 @@ INSERT INTO schema_migrations (version) VALUES ('20131213124951');
 
 INSERT INTO schema_migrations (version) VALUES ('20131219083359');
 
-INSERT INTO schema_migrations (version) VALUES ('20131219091126');
-
 INSERT INTO schema_migrations (version) VALUES ('20131219093649');
 
-INSERT INTO schema_migrations (version) VALUES ('20131219100651');
-
-INSERT INTO schema_migrations (version) VALUES ('20131219103529');
-
-INSERT INTO schema_migrations (version) VALUES ('20131219134429');
-
-INSERT INTO schema_migrations (version) VALUES ('20131219141740');
-
-INSERT INTO schema_migrations (version) VALUES ('20131219142324');
-
-INSERT INTO schema_migrations (version) VALUES ('20131219153746');
-
-INSERT INTO schema_migrations (version) VALUES ('20131219162643');
-
-INSERT INTO schema_migrations (version) VALUES ('20131219163756');
-
 INSERT INTO schema_migrations (version) VALUES ('20131220080516');
+
+INSERT INTO schema_migrations (version) VALUES ('20131220084119');
+
+INSERT INTO schema_migrations (version) VALUES ('20131220092952');
 
 INSERT INTO schema_migrations (version) VALUES ('21');
 

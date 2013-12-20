@@ -6,6 +6,34 @@ class UuidForUsersAndPeople < ActiveRecord::Migration
 
   def up
 
+
+    #
+    # Groups
+    #
+
+    prepare_table 'groups'
+    migrate_foreign_key 'grouppermissions', 'groups'
+    migrate_foreign_key 'groups_users', 'groups'
+    migrate_foreign_key 'meta_data_meta_departments', 'groups', false, 'meta_department_id'
+    migrate_table 'groups'
+    add_foreign_key 'grouppermissions', 'groups'
+    add_foreign_key 'groups_users', 'groups'
+    add_foreign_key 'meta_data_meta_departments', 'groups', column: 'meta_department_id', dependent: 'delete'
+    add_index :groups_users, [:group_id,:user_id], unique: true
+
+    #
+    # Grouppermissions
+    #
+    prepare_table 'grouppermissions'
+    migrate_table 'grouppermissions'
+
+    #
+    # Userpermissions
+    #
+    prepare_table 'userpermissions'
+    migrate_table 'userpermissions'
+
+
     #
     # Users
     #
