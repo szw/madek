@@ -24,21 +24,21 @@ Feature: Managing Users and Logins
   @jsbrowser
   Scenario: Adding user to a group 
     When I visit "/app_admin/groups"
-    And I click on "Details"
-    Then I am on the group page with id "2"
+    And I click on the details link of the first row
     When I click on "Add user"
-    Then I am on the page where I can add a user to the group with id "2"
     And I see the submit button is disabled
     When I set the input with the name "[query]" to "nor"
     And I select first result from the autocomplete list
-    Then The hidden field with name "[user_id]" should match "^\w+$"
+    Then The hidden field with name "[user_id]" should match "^\w+"
     And I see the submit button is enabled
     When I submit
     Then I can see a success message
 
   @jsbrowser
   Scenario: Adding user to a group by login
-    When I visit "/app_admin/groups/2/form_add_user"
+    When I visit "/app_admin/groups"
+    And I click on the details link of the first row
+    When I click on "Add user"
     And I see the submit button is disabled
     When I set the input with the name "[query]" to "[norbert]"
     Then The hidden field with name "[user_id]" should match ""
