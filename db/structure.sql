@@ -1379,7 +1379,7 @@ ALTER TABLE ONLY full_texts
 --
 
 ALTER TABLE ONLY grouppermissions
-    ADD CONSTRAINT grouppermissions_group_id_fk FOREIGN KEY (group_id) REFERENCES groups(id);
+    ADD CONSTRAINT grouppermissions_group_id_fk FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE;
 
 
 --
@@ -1395,7 +1395,7 @@ ALTER TABLE ONLY grouppermissions
 --
 
 ALTER TABLE ONLY groups_users
-    ADD CONSTRAINT groups_users_group_id_fk FOREIGN KEY (group_id) REFERENCES groups(id);
+    ADD CONSTRAINT groups_users_group_id_fk FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE;
 
 
 --
