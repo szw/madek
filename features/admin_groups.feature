@@ -8,12 +8,17 @@ Feature: Managing Users and Logins
   @jsbrowser
   Scenario: Deleting groups
     When I visit "/app_admin/groups"
+    And I set the input with the name "[fuzzy_search]" to "DDE_FDE_BDE"
+    And I submit
     Then I can see "DDE_FDE_BDE.alle"
-    When I visit "/app_admin/groups/651"
+    When I remember the id of the first group-row
+    And I click on the details link of the first row
     Then I can see the "Delete" link
     When I click on "Delete"
     And I confirm the browser dialog
     Then I can see a success message
+    And I set the input with the name "[fuzzy_search]" to "DDE_FDE_BDE"
+    And I submit
     And I cannot see "DDE_FDE_BDE.alle"
 
   @jsbrowser

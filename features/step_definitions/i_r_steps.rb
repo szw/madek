@@ -29,6 +29,10 @@ Then /^I remember a media_entry that doesn't belong to me, has no public, nor ot
   @media_entry.grouppermissions.destroy_all
 end
 
+When(/^I remember the id of the first group-row$/) do
+  @id = all("tr.group").first[:id]
+end
+
 Then /^I remember the number of ZencoderJobs$/ do
   @zencoder_jobs_number = all("table.zencoder-jobs tbody tr").size rescue 0
 end
