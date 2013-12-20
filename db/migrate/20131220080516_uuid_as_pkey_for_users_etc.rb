@@ -1,6 +1,6 @@
 require Rails.root.join "db","migrate","uuid_migration_helper"
 
-class UuidForUsersEtc < ActiveRecord::Migration
+class UuidAsPkeyForUsersEtc < ActiveRecord::Migration
 
   include ::UuidMigrationHelper
 
