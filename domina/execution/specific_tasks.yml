@@ -94,6 +94,6 @@ contexts:
       order: 8
       type: post_process
       body: "substitute_with_path: domina/scripts/drop_test_db.sh"
-  tasks: "substitute_with_path: domina/execution/rspec_tasks.yml"
+  tasks:
   
 
