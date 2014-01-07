@@ -2,8 +2,6 @@ class Userpermission < ActiveRecord::Base
   belongs_to :media_resource
   belongs_to :user 
 
-  default_scope { reorder(:created_at) }
-
   def self.destroy_irrelevant
     Userpermission.where(view: false, edit:false, download: false,manage: false).delete_all
     Userpermission.connection.execute <<-SQL

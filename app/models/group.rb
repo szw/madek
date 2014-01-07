@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 class Group < ActiveRecord::Base
 
-  default_scope { reorder(:created_at) }
+  default_scope { reorder(:name) }
 
   has_many :grouppermissions
   has_and_belongs_to_many :users

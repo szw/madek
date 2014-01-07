@@ -26,7 +26,6 @@ class MetaContext < ActiveRecord::Base
   end
 
 ##################################################################
-  default_scope { reorder(:created_at) }
 
   scope :for_interface, ->{where(:is_user_interface => true)}
   scope :for_import_export, ->{where(:is_user_interface => false)}
