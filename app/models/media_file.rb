@@ -5,8 +5,6 @@ class MediaFile < ActiveRecord::Base
   belongs_to :media_entry, foreign_key: :media_entry_id
   has_many :zencoder_jobs, dependent: :destroy
 
-  default_scope { reorder(:created_at) }
-
   def most_recent_zencoder_job
     zencoder_jobs.reorder("zencoder_jobs.created_at DESC").limit(1).first
   end
