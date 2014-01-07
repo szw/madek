@@ -1,6 +1,8 @@
 # -*- encoding : utf-8 -*-
 class MetaDatum < ActiveRecord::Base
 
+  default_scope { reorder(:created_at) }
+
   UUID_V4_REGEXP= /^\w{8}-\w{4}-4\w{3}-\w{4}-\w{12}$/
 
   class << self

@@ -19,6 +19,7 @@ class MetaKey < ActiveRecord::Base
   has_many :meta_terms, ->{order("meta_keys_meta_terms.position ASC")}, through: :meta_key_meta_terms
   accepts_nested_attributes_for :meta_terms, reject_if: proc { |attributes| LANGUAGES.all? {|l| attributes[l].blank? } } #old# , allow_destroy: true
 
+  default_scope { reorder(:created_at) }
   scope :with_meta_data, lambda{joins(:meta_data).group(:id)}
   scope :for_meta_terms, lambda{where(meta_datum_object_type: "MetaDatumMetaTerms")}
 

@@ -2,6 +2,8 @@
 class Preview < ActiveRecord::Base
   belongs_to :media_file
 
+  default_scope { reorder(:created_at) }
+
   after_destroy do
     begin
       File.delete(full_path)

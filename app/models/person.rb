@@ -15,7 +15,10 @@ class Person < ActiveRecord::Base
   end
   
 
+
 ### SCOPES ####################################
+   
+  default_scope { reorder(:created_at) }
 
   scope :with_meta_data, lambda{ where(%Q<
     "people"."id" in ( #{Person.joins(:meta_data).select('"people"."id"').group('"people"."id"').to_sql}) >)}

@@ -15,7 +15,7 @@ Feature: Workgroups
      And I click the primary action of this dialog
     Then the group is created
 
-   @jsbrowser
+  @jsbrowser
   Scenario: Requiring name during group creation
     When I go to my groups
      And I try to create a new group by using the context primary action
