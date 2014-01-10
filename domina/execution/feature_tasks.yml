@@ -91,6 +91,10 @@
   scripts:
     cucumber:
       body: bundle exec cucumber --strict "features/import_02.feature"
+- name: import_03
+  scripts:
+    cucumber:
+      body: bundle exec cucumber --strict "features/import_03.feature"
 - name: import_encoding
   scripts:
     cucumber:
