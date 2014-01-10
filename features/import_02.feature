@@ -81,7 +81,7 @@ Feature: importing an image
     And Petra has "view" user-permission on the new media_entry with the tile "Berlin Wall"
     And Petra has "download" user-permission on the new media_entry with the tile "Berlin Wall"
 
-  @wip @chrome
+  @firefox
   Scenario: Adding the imports to a new set 
     Given I am signed-in as "Normin"
     And I am going to import images
