@@ -30,7 +30,12 @@ class DelayedChange
     target = $(e.target)
     clearTimeout @timeout if @timeout?
     @timeout = setTimeout =>
-      @target.removeAttr("data-delay-timeout-pending")
-      target.trigger("delayedChange") if target.val() != @last_value
+      if target.val() != @last_value
+        target.trigger("delayedChange") 
+        setTimeout => 
+          @target.removeAttr("data-delay-timeout-pending") 
+        , 200
+      else
+        @target.removeAttr("data-delay-timeout-pending") 
       @last_value = target.val()  
     , @delay
