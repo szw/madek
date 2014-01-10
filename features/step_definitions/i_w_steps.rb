@@ -44,7 +44,11 @@ Then /^I wait until there are no more ajax requests running$/  do
 end
 
 Then /^I wait until there are no more ajax requests running and no delays are pending$/  do
+  Rails.logger.info ["WAITING until there are no more ajax requests running and no delays are pending"]
   wait_until{ page.evaluate_script( %<$.active + $("[data-delay-timeout-pending]").length>) == 0}
+  Rails.logger.info ["DONE WAITING until there are no more ajax requests running and no delays are pending"]
+  Rails.logger.info ["WAITING for sleep"]
   sleep 5
+  Rails.logger.info ["DONE for sleep"]
 end
 
