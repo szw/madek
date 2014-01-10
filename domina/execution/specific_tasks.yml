@@ -66,6 +66,14 @@ contexts:
       type: post_process
       body: "substitute_with_path: domina/scripts/context_feature_stopx.sh"
   tasks:
+  - name: batch_edit_permissions
+    scripts:
+      cucumber:
+        body: bundle exec cucumber --strict "features/batch_edit_permissions.feature"
+  - name: apply_to_all
+    scripts:
+      cucumber:
+        body: bundle exec cucumber --strict "features/apply_to_all.feature"
   - name: import_01
     scripts:
       cucumber:
@@ -74,6 +82,12 @@ contexts:
     scripts:
       cucumber:
         body: bundle exec cucumber --strict "features/import_02.feature"
+  - name: workgroups
+    scripts:
+      cucumber:
+        body: bundle exec cucumber --strict "features/workgroups.feature"
+
+
 
 
 - name: rspec specs
