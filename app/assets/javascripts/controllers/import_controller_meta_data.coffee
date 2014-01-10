@@ -38,7 +38,7 @@ class ImportController.MetaData
         @setupResourceForEdit @mediaResources[0]
       do @showForm
       @checkInvalidToggle = true
-    @el.delayedChange(delay: 5000)
+    @el.delayedChange(delay: 500)
 
   extendForm: ->
     new App.FormWidgets.Defaults {el: @el}
