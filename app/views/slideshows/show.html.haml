@@ -1,0 +1,15 @@
+.container{ "data-media-set" => @media_set.id, "data-sort" => params[:sort] }
+  .slide
+    .content
+      %img(src="/media_resources/117/image?size=maximum")
+    .controls
+      .back Back
+      .next Next
+      .title Title
+      .clear
+    .close
+      %a(href="#" onclick="window.location.reload(true);") Restart
+      &nbsp;
+      &nbsp;
+      &nbsp;
+      %a(href="#" onclick="window.close();") Close

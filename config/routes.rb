@@ -18,13 +18,17 @@ MAdeK::Application.routes.draw do
   get 'visualization/my/favorites' => 'visualization#my_favorites', :as => "visualization_of_my_favorites"
   get 'visualization/:action(/:id)', controller: 'visualization'
 
+  ##### SLIDESHOW
+
+  resources "slideshows", only: :show
+
   ##### Zencoder
 
   post 'zencoder_jobs/:id/notification' => 'zencoder_jobs#post_notification', as: 'zencoder_job_notification'
   resources 'previews', only: [:show]
 
   ##### SEARCH
-  
+
   resource :search , controller: :search, only: [:show] do
     get 'result'
   end
@@ -90,12 +94,11 @@ MAdeK::Application.routes.draw do
 
   #get '/login', :to => "authenticator/zhdk#login"
   #post '/logout', :to => "authenticator/zhdk#logout"
-  get '/login_and_return_here', :to => "application#login_and_return_here" 
+  get '/login_and_return_here', :to => "application#login_and_return_here"
   #get '/db/login', :to => "authenticator/database_authentication#login"
   #post '/db/do_login', :to => "authenticator/database_authentication#do_login"
   #post '/db/logout', :to => "authenticator/database_authentication#logout"
   #get '/authenticator/zhdk/login_successful/:id', :to => "authenticator/zhdk#login_successful"
-
 
   ###############################################
 
@@ -116,7 +119,7 @@ MAdeK::Application.routes.draw do
   resources :permissions, only: :index do
     collection do
       get :edit
-      put :update 
+      put :update
     end
   end
 
@@ -143,7 +146,7 @@ MAdeK::Application.routes.draw do
   ###############################################
   #NOTE first media_entries and then media_sets
 
-  # TODO merge to :media_resources ?? 
+  # TODO merge to :media_resources ??
   resources :media_entries, :except => :destroy do
     collection do
       get :edit_multiple
@@ -167,7 +170,7 @@ MAdeK::Application.routes.draw do
 
   ###############################################
 
-  # TODO merge to :media_resources ?? 
+  # TODO merge to :media_resources ??
   resources :media_sets, :except => :destroy do #-# TODO , :except => :index # the index is only used to create new sets
     member do
       get :abstract
@@ -245,7 +248,7 @@ MAdeK::Application.routes.draw do
         get :add_member
       end
       resources :media_entries, :except => :destroy
-    end 
+    end
   end
 
   resources :people
@@ -273,7 +276,7 @@ MAdeK::Application.routes.draw do
     resources :zencoder_jobs, only: [:index, :show]
 
     resources :media_files, only: [:index, :show] do
-      member do 
+      member do
         post 'reencode'
         post 'recreate_thumbnails'
       end
@@ -284,7 +287,7 @@ MAdeK::Application.routes.draw do
 
     resources :media_sets, only: [:index, :show] do
       member do
-        delete 'delete_with_child_media_resources' 
+        delete 'delete_with_child_media_resources'
       end
 
       resources 'individual_meta_contexts', only: [] do
@@ -309,12 +312,12 @@ MAdeK::Application.routes.draw do
         post 'add_user'
       end
       resources :users, only: [] do
-        member do 
+        member do
           delete 'remove_user_from_group'
         end
       end
     end
-    resources :people do 
+    resources :people do
       member do
         get  :form_transfer_meta_data
         post :transfer_meta_data

@@ -1,0 +1,19 @@
+%li.ui-drop-item
+  %a{ href: "#", onclick: "window.openSlideshow(#{@media_set.id});" }
+    %i.icon-highlight.mid
+    = _("Slideshow")
+
+:coffee
+  window.openSlideshow = (mediaSetId) ->
+    params  = { sort: "created_at" }
+    queries = window.location.search.substring(1).split("&")
+
+    for query in queries
+      temp = query.split('=')
+      params[temp[0]] = temp[1] if temp.length > 1
+
+    url  = '/slideshows/' + mediaSetId + '?sort=' + params.sort
+    opts = "height=768,width=1024,resizable=1,scrollbars=1," +
+           "status=0,titlebar=0,menubar=0,toolbar=0,location=0,top=50,left=50"
+
+    window.open(url, "_blank", opts)
