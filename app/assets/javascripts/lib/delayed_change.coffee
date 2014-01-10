@@ -31,7 +31,7 @@ class DelayedChange
         console.log ["setting delay attr", target_id]
         @timeouts[target_id] = setTimeout => 
           target.trigger("delayedChange") 
-          target.removeAttr("data-delay-timeout-pending") 
           console.log ["removing delay attr", target_id]
+          target.removeAttr("data-delay-timeout-pending") 
         , @delay
 
