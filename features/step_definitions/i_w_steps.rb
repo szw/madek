@@ -1,13 +1,5 @@
 # -*- encoding : utf-8 -*-
 #
-#
-#
-
-
-When /^I wait for "(.*?)" milliseconds to pass$/  do |ms_s|
-  sleep ( ms_s.to_f / 1000 )
-end
-
 Then /^I wait for multi\-select\-tag with the text "(.*?)"$/ do |text|
   wait_until{all("li.multi-select-tag",text: text).size > 0}
 end
