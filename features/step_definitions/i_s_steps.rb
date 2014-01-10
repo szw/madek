@@ -42,7 +42,6 @@ end
 
 Then /^I set the input with the name "(.*?)" to "(.*?)"$/ do |name, value|
   find("input[name='#{name}']").set(value)
-  page.execute_script %Q{ $("input[name='#{name}']").keyup() }
 end
 
 When(/^I set the input with the name "(.*?)" to persons last name$/) do |name|
