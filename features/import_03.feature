@@ -18,7 +18,6 @@ Feature: importing an image
     And I wait until I am on the "/import/meta_data" page
     And I set the input in the fieldset with "title" as meta-key to "Berlin Wall" 
     And I set the input in the fieldset with "copyright notice" as meta-key to "WTFPL" 
-    And I set the input in the fieldset with "keywords" as meta-key to "Blah" 
     And I wait until there are no more ajax requests running and no delays are pending
     And I click on the link "Weiter..." 
 
