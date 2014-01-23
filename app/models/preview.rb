@@ -12,7 +12,7 @@ class Preview < ActiveRecord::Base
   end
 
   def full_path
-    File.join(THUMBNAIL_STORAGE_DIR, filename[0,1], filename)    
+    File.join(THUMBNAIL_STORAGE_DIR, filename[0,1], filename)
   end
 
   def size
@@ -29,5 +29,4 @@ class Preview < ActiveRecord::Base
   def apache_url_for_symlink
     "/previews/#{filename}"
   end
-
 end

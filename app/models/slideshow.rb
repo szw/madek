@@ -23,6 +23,8 @@ class Slideshow
       @asc   = false
       @order = :created_at
     end
+
+    @contents = nil
   end
 
   private
@@ -36,13 +38,14 @@ class Slideshow
     contents          = []
 
     media_files.each do |mf|
-      media_entry = media_set.child_media_resources.find(mf.media_entry_id)
+      media_entry      = media_set.child_media_resources.find(mf.media_entry_id)
+      copyright_notice = media_entry.meta_data.select { |md| md[:meta_key_id] == "copyright notice" }.first
 
       contents << {
         content_type: mf.content_type,
         id:           mf.media_entry_id,
         name:         media_entry.title,
-        copyright:    media_entry.meta_data.select { |md| md[:meta_key_id] == "copyright notice" }.first.string,
+        copyright:    copyright_notice ? copyright_notice.string : "",
         filename:     mf.filename,
         created_at:   media_entry.created_at,
         updated_at:   media_entry.updated_at
